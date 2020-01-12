@@ -1386,7 +1386,7 @@ def interpolate_data_right(mentry, mdata, mmfheights, desired_heights):
                     "dimension of supplied data =3, layerdim at 0 and 2")
     return mdata
 
-def mmf_stand_alone(settings, ancil, mdict):
+def mmf_stand_alone(settings, ancil, mdict, outputname):
     '''
     Routine to call if mmf is run as a stand alone code
 
@@ -1403,6 +1403,8 @@ def mmf_stand_alone(settings, ancil, mdict):
     mdict: dict
         measurement data dictionarry with keys: RAA, SZA, RAA, (TAA), ae, tg
         (doy), el_ang, (year), o4used, scan_idx, z_detector
+    outputnames: str
+        name of output netCDF4 file to be created
     '''
     TM.initialize(settings["configuration"])
     mmf = MMF_MASTER(settings, mdict, ancil)
@@ -1418,7 +1420,7 @@ def mmf_stand_alone(settings, ancil, mdict):
         settings["dimension_names"]["DIM_SCAN_NAME"]: len(mdict["scan_idx"]),
         settings["dimension_names"]["DIM_ANGLE_NAME"]: TM.REALDIMS["MAXAXIS"]}
     mmf_exp = yn.expand_keys(mmf_new)
-    yn.dict_to_nc(mmf_exp, "test.nc", dims)
+    yn.dict_to_nc(mmf_exp, outputname, dims)
     return erc
 
 def test_run(settings_loc, ancil_loc, mdict_loc):
@@ -1458,7 +1460,7 @@ def test_run(settings_loc, ancil_loc, mdict_loc):
                     mdict[key] = np.array(mdict[key])
                 except:
                     pass
-    ecr = mmf_stand_alone(settings, ancil, mdict)
+    ecr = mmf_stand_alone(settings, ancil, mdict, "test.nc")
     print("error code", ecr)
     stop = time.time()
     print(stop-start)
