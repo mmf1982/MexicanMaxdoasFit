@@ -11,7 +11,7 @@ False
 0.5e0
 
 * real elevation angle for zenith direction
-2.001
+0.001
 
 * Sa correlation length in km
 0.2
