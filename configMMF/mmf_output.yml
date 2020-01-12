@@ -1,0 +1,520 @@
+Sa_corrlen_aer:
+  _FillValue: DBL_FILLVAL
+  description: Correlation length for off-diagonal elements of the a priori covariance matrix
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float32
+  name: aer/apriori_covariance_matrix_correlation_length
+  units: km
+Sa_corrlen_tg:
+  _FillValue: DBL_FILLVAL
+  description: Correlation length for off-diagonal elements of the a priori covariance matrix
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float32
+  name: tg/apriori_covariance_matrix_correlation_length
+  units: km
+Sa_scaling_aer:
+  _FillValue: DBL_FILLVAL
+  description: Fraction of a priori profile to go into diagonal elements of assumed correlation matrix
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float32
+  name: aer/apriori_covariance_matrix_scale_parameter
+  units: '1'
+Sa_scaling_tg:
+  _FillValue: DBL_FILLVAL
+  description: Fraction of a priori profile to go into diagonal elements of assumed correlation matrix
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float32
+  name: tg/apriori_covariance_matrix_scale_parameter
+  units: '1'
+air_column_aer:
+  _FillValue: DBL_FILLVAL
+  description: partial column density of air in layer
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float64
+  name: air_column_in_layer
+  units: molec/cm2
+aircolumn:
+  _FillValue: DBL_FILLVAL
+  description: partial column density of air in layer
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float64
+  name: air_column_in_layer_THIS
+  units: molec/cm2
+aod_aer:
+  _FillValue: DBL_FILLVAL
+  description: Total aerosol optical depth
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float32
+  name: aer/aerosol_optical_depth
+  units: '1'
+aod_err_aer:
+  _FillValue: DBL_FILLVAL
+  description: Total aerosol optical depth error calculated from covariance measurement noise matrix and covariance smoothing error matrix
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float32
+  name: aer/aerosol_optical_depth_error
+  units: '1'
+apriori_aer:
+  _FillValue: DBL_FILLVAL
+  description: apriori aerosol profile
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float64
+  name: aer/aerosol_extinction_apriori_profile
+  units: km-1
+apriori_tg:
+  _FillValue: DBL_FILLVAL
+  description: apriori gas profile
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float64
+  name: tg/concentration_apriori_profile
+  units: molec/cm3
+asy_aer:
+  _FillValue: DBL_FILLVAL
+  description: aerosol asymmetry factor used in forward model
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float32
+  name: aer/aerosol_asymmetry_factor
+  units: '1'
+asy_tg:
+  _FillValue: DBL_FILLVAL
+  description: aerosol asymmetry factor used in forward model
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float32
+  name: tg/aerosol_asymmetry_factor
+  units: '1'
+avk_aer:
+  _FillValue: DBL_FILLVAL
+  description: averaging kernel of aerosol retrieval in terms of layer aerosol optical depth
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+    - DIM_LAYERS
+  datatype: float32
+  name: aer/averaging_kernel_of_aerosol_profile
+  units: '1'
+avk_col_aer:
+  _FillValue: DBL_FILLVAL
+  description: averaging kernel of aerosol retrieval in terms of aerosol extinction
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float32
+  name: aer/averaging_kernel_of_aerosol_optical_depth
+  units: '1'
+avk_col_tg:
+  _FillValue: DBL_FILLVAL
+  description: averaging kernel of gas retrieval in terms of VCD
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float32
+  name: tg/averaging_kernel_of_concentration_vertical_column_density
+  units: (molec/cm2)/(molec/cm2)
+avk_tg:
+  _FillValue: DBL_FILLVAL
+  description: averaging kernel of gas profile retrieval in terms of layer partial vcd
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+    - DIM_LAYERS
+  datatype: float32
+  name: tg/averaging_kernel_of_concentration_profile
+  units: (molec/cm2)/(molec/cm2)
+combierror_aer:
+  _FillValue: DBL_FILLVAL
+  description: combined smoothing and noise error of retrieved aerosol profile
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float64
+  name: aer/aerosol_extinction_profile_error
+  units: km-1
+combierror_tg:
+  _FillValue: DBL_FILLVAL
+  description: combined smoothing and noise error of retrieved gas profile
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float64
+  name: tg/concentration_profile_error
+  units: molec/cm3
+dof_aer:
+  _FillValue: DBL_FILLVAL
+  description: degree of freedom
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float32
+  name: aer/degrees_of_freedom
+  units: '1'
+dof_tg:
+  _FillValue: DBL_FILLVAL
+  description: degree of freedom
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float32
+  name: tg/degrees_of_freedom
+  units: '1'
+flag_aer:
+  _FillValue: INT_FILLVAL
+  description: 'flag based on convergence, rms, dof, rms and stability: 0=ok, 1=warning, 2=error'
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: int32
+  name: aer/flag
+  units: '1'
+flag_tg:
+  _FillValue: INT_FILLVAL
+  description: 'flag based on convergence, rms, dof, rms and stability: 0=ok, 1=warning, 2=error; if aerosol is error (2)  and tg not error (<2), tracegas is warning (=1)'
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: int32
+  name: tg/flag
+  units: '1'
+flag_detail_aer:
+  _FillValue: INT_FILLVAL
+  description: 'flag based on convergence (1 warn, 16 error), rms (2 warn, 32 error), dof (4 warn 64 error),  and stability (8 warn 128 error)'
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: int32
+  name: aer/flag_detail
+  units: '1'
+flag_detail_tg:
+  _FillValue: INT_FILLVAL
+  description: 'flag based on convergence (1 warn, 16 error), rms (2 warn, 32 error), dof (4 warn 64 error) and stability (8 warn 128 error)'
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: int32
+  name: tg/flag_detail
+  units: '1'
+n_err_cov_aer:
+  _FillValue: DBL_FILLVAL
+  description: covariance matrix of profile noise error
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+    - DIM_LAYERS
+  datatype: float32
+  name: aer/covariance_of_aerosol_extinction_profile_noise_error
+  units: (molec/cm2)/(molec/cm2)
+n_err_cov_tg:
+  _FillValue: DBL_FILLVAL
+  description: covariance matrix of profile noise error
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+    - DIM_LAYERS
+  datatype: float32
+  name: tg/covariance_of_concentration_profile_noise_error
+  units: (molec/cm2)/(molec/cm2)
+noiseerror_aer:
+  _FillValue: DBL_FILLVAL
+  description: noise error of retrieved aerosol profile
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float64
+  name: aer/aerosol_extinction_profile_noise_error
+  units: km-1
+noiseerror_tg:
+  _FillValue: DBL_FILLVAL
+  description: noise error of retrieved gas profile
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float64
+  name: tg/concentration_profile_noise_error
+  units: molec/cm3
+layerthickness:
+  _FillValue: DBL_FILLVAL
+  description: extend of layer
+  dimensions: !!python/tuple
+    - DIM_LAYERS
+  datatype: float32
+  name: layer_thickness
+  units: 'm'
+desired_heights:
+  _FillValue: DBL_FILLVAL
+  description: middle heights above ground
+  dimensions: !!python/tuple
+    - DIM_LAYERS
+  datatype: float32
+  name: height_layer_centers
+  units: 'm'
+pressure_aer:
+  _FillValue: DBL_FILLVAL
+  description: pressure interpolated at retrieval grid middle heights
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float32
+  name: pressure_in_layer
+  units: hPa
+profile_aer:
+  _FillValue: DBL_FILLVAL
+  description: retrieved aerosol profile
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float64
+  name: aer/aerosol_extinction_profile
+  units: km-1
+profile_tg:
+  _FillValue: DBL_FILLVAL
+  description: retrieved gas profile
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float64
+  name: tg/concentration_profile
+  units: molec/cm3
+rms_dscd_aer:
+  _FillValue: DBL_FILLVAL
+  description: rms calculated as square root of mean of square of fraction of the
+    difference between measured and modeled dscd and the measured error
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float64
+  name: aer/slant_column_density_rms
+  units: '1'
+rms_dscd_tg:
+  _FillValue: DBL_FILLVAL
+  description: rms calculated as square root of mean of square of fraction of the
+    difference between measured and modeled dscd and the measured error
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float64
+  name: tg/slant_column_density_rms
+  units: '1'
+scd_sim_aer:
+  _FillValue: DBL_FILLVAL
+  description: simulated slant columns with retrieved profile
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_ANGLE_NAME
+  datatype: float64
+  name: aer/slant_column_density_simulated
+  units: molec2/cm5
+scd_sim_tg:
+  _FillValue: DBL_FILLVAL
+  description: simulated slant columns with retrieved profile
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_ANGLE_NAME
+  datatype: float64
+  name: tg/slant_column_density_simulated
+  units: molec/cm2
+scd_meas_err_tg:
+  _FillValue: DBL_FILLVAL
+  description: measured slant column density errors
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_ANGLE_NAME
+  datatype: float64
+  name: tg/slant_column_density_measured_error
+  units: molec/cm2
+scd_meas_err_aer:
+  _FillValue: DBL_FILLVAL
+  description: measured slant column density errors
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_ANGLE_NAME
+  datatype: float64
+  name: aer/slant_column_density_measured_error
+  units: molec/cm2
+scd_meas_tg:
+  _FillValue: DBL_FILLVAL
+  description: measured slant columns
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_ANGLE_NAME
+  datatype: float64
+  name: tg/slant_column_density_measured
+  units: molec/cm2
+scd_meas_aer:
+  _FillValue: DBL_FILLVAL
+  description: measured slant columns
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_ANGLE_NAME
+  datatype: float64
+  name: aer/slant_column_density_measured
+  units: molec/cm2
+sm_err_cov_aer:
+  _FillValue: DBL_FILLVAL
+  description: covariance matrix of profile smoothing error
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+    - DIM_LAYERS
+  datatype: float32
+  name: aer/covariance_of_aerosol_extinction_profile_smoothing_error
+  units: (km-1)/(km-1)  # is this correct?
+counter_aer:
+  _FillValue: INT_FILLVAL
+  description: iteration counter
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: int32
+  name: aer/iteration_counter
+  units: "1"
+counter_tg:
+  _FillValue: INT_FILLVAL
+  description: iteration counter
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: int32
+  name: tg/iteration_counter
+  units: "1"
+sm_err_cov_tg:
+  _FillValue: DBL_FILLVAL
+  description: covariance matrix of profile smoothing error
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+    - DIM_LAYERS
+  datatype: float32
+  name: tg/covariance_of_concentration_profile_smoothing_error
+  units: (molec/cm2)/(molec/cm2)
+smootherror_aer:
+  _FillValue: DBL_FILLVAL
+  description: smoothing error of retrieved aerosol profile
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float64
+  name: aer/aerosol_extinction_profile_smoothing_error
+  units: ' km-1'
+smootherror_tg:
+  _FillValue: DBL_FILLVAL
+  description: ' smoothing error of retrieved gas profile'
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float64
+  name: tg/concentration_profile_smoothing_error
+  units: ' molec/cm3'
+ssa_aer:
+  _FillValue: DBL_FILLVAL
+  description: aerosol single scattering albedo used in forward model
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float32
+  name: aer/aerosol_single_scattering_albedo
+  units: '1'
+ssa_tg:
+  _FillValue: DBL_FILLVAL
+  description: aerosol single scattering albedo used in forward model
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float32
+  name: tg/aerosol_single_scattering_albedo
+  units: '1'
+temperature_aer:
+  _FillValue: DBL_FILLVAL
+  description: temperature interpolated at retrieval grid middle heights
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+    - DIM_LAYERS
+  datatype: float32
+  name: temperature_in_layer
+  units: K
+vcd_aer:
+  _FillValue: DBL_FILLVAL
+  description: o4 vertical column density
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float64
+  name: aer/vertical_column_density
+  units: molec/cm5
+vcd_err_tg:
+  _FillValue: DBL_FILLVAL
+  description: gas vertical column density error calculated from covariance smoothing
+    error matrix, covariance measurement noise error matrix and systematic error as
+    a fixed fraction of vcd
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float32
+  name: tg/vertical_column_density_error
+  units: molec/cm2
+vcd_tg:
+  _FillValue: DBL_FILLVAL
+  description: gas vertical column density
+  dimensions: !!python/tuple
+    - DIM_SCAN_NAME
+  datatype: float32
+  name: tg/vertical_column_density
+  units: molec/cm2
+FROM_ORIG:
+  el_ang:
+    _FillValue: DBL_FILLVAL
+    description: telescope elevation angle
+    dimensions: !!python/tuple
+        - DIM_SCAN_NAME
+        - DIM_ANGLE_NAME
+    datatype: float32
+    name: telescope_elevation_angle
+    units: 'degree'
+  SZA:
+    _FillValue: DBL_FILLVAL
+    description: telescope elevation angle
+    dimensions: !!python/tuple
+        - DIM_SCAN_NAME
+    datatype: float32
+    name: solar_zenith_angle
+    units: 'degree'
+  RAA:
+    _FillValue: DBL_FILLVAL
+    description: azimuth angle between sun and telescope
+    dimensions: !!python/tuple
+        - DIM_SCAN_NAME
+    datatype: float32
+    name: relative_azimuth_angle
+    units: 'degree'
+  TAA:
+    _FillValue: DBL_FILLVAL
+    description: telescope azimuth angle
+    dimensions: !!python/tuple
+        - DIM_SCAN_NAME
+    datatype: float32
+    name: telescope_azimuth_angle
+    units: 'degree'
+  doy:
+    _FillValue: DBL_FILLVAL
+    description: fractional day of year (Jan, 1st = 1)
+    dimensions: !!python/tuple
+        - DIM_SCAN_NAME
+    datatype: float32
+    name: fractional_day_of_measurement
+    units: 'day'
+  year:
+    _FillValue: DBL_FILLVAL
+    description: Year of measurement
+    dimensions: !!python/tuple
+        - DIM_SCAN_NAME
+    datatype: float32
+    name: year_of_measurement
+    units: 'year'
+  scan_idx:
+    _FillValue: INT_FILLVAL
+    description: Scan index of measurement
+    dimensions: !!python/tuple
+        - DIM_SCAN_NAME
+    datatype: int32
+    name: scan_index
+    units: '1'

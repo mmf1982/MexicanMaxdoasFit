@@ -1,0 +1,77 @@
+REALDIMS:
+    "MAXAXIS": 16
+    "NUM_GRID": 20
+    "HEIGHTGRIDKM":
+        - 0.0
+        - 0.2
+        - 0.4
+        - 0.6
+        - 0.8
+        - 1.0
+        - 1.2
+        - 1.4
+        - 1.6
+        - 1.8
+        - 2.0
+        - 2.2
+        - 2.4
+        - 2.6
+        - 2.8
+        - 3.0
+        - 3.2
+        - 3.4
+        - 3.6
+        - 3.8
+        - 4.0
+
+GSETTINGS:
+    "DEBUG": False
+
+FILLVALS:
+    "INT_FILLVAL": -2147483647
+    "DBL_FILLVAL": .nan
+    "STR_FILLVAL": "x"
+    "USHORT_FILLVAL": 65535
+    "SHORT_FILLVAL": -32767
+    "UINT_FILLVAL": 4294967295
+    "TEST_FILLVAL": -123123.123123
+    "LONG_FILLVAL": -2147483647
+
+DEFAULTS:
+    "aod_apriori": 0.18
+    "aessa": 0.92
+    "aeasym": 0.68
+    "aewav": 400.0
+    "angstrom_exponent": 1.0
+    "albedo": 0.06
+    "aetime": 100.0
+
+ERRCODES:
+    "LOADING": 1
+    "PRE-PROCESS": 2
+    "BC": 4
+    "DISTANCE": 8
+    "MAPA": 16
+    "MMF": 32
+    "UNUSED1": 64
+    "WRITE": 128
+    "GEOMS": 256
+    "NAMES": 512
+    "CONSISTENCE": 1024
+    "UNUSED3": 2048
+    "UNUSED4": 4096
+
+SYSERRFRAC:
+# For aerosols 20% based on Clémer et al. (2010) and Wagner et al. (2009)
+# For HCHO, 0.09 is correct.
+# For NO2, it should be 0.03 for both tropo and strato, according to Vandaele et al., JQSRT, 1998.
+    "NO2": 0.03
+    "O4": 0.20
+    "HCHO": 0.09
+
+CONSISTENCE:
+    "PROF_WARN": 1.0
+    "PROF_ERR": 2.0
+    "VCD_ERR": 1.0
+    "VCD_WARN": 0.5
+    "PROF_FRAC_OF_VCD_LIMIT": 0.02

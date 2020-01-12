@@ -1,0 +1,16 @@
+do_ae: true
+do_tg: true
+lower_el_ang_limit: 0.8
+mmfconfigs: configMMF/
+mmfexe_ae: ./AEROSOL_profile_wf.exe
+mmfexe_tg: ./NO2_profile_wf.exe
+mmfinputs: ancilMMF/
+mmfinputs_specific: ancilMMF/station/
+mmftempdir: /tmp/mmf_
+configuration: configMMF/config.cnf
+multiprocs: true
+procs: 2
+dimension_names:
+    DIM_ANGLE_NAME: elevation_angle_size
+    DIM_LAYERS: layer_size
+    DIM_SCAN_NAME: scan_size
