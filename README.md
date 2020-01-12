@@ -11,6 +11,7 @@ To compile the fortran core of MMF together with vlidort:
 
 To run the retrieval of the included test measurements:
   * create the follwing folder structure (i.e. copy the produced executables inside the main path):
+      ```
       ancilMMF:
           2p6_VLIDORT_ReadInput.cfg
           HCHO_223.txt
@@ -36,6 +37,7 @@ To run the retrieval of the included test measurements:
           SETTINGS.yml
       AEROSOL_profile_wf.exe
       NO2_profile_wf.exe
+      ```
   * within the main folder, run: python3.7 -m pythoncode.MMFprofiling
 
 
