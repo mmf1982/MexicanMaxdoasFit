@@ -176,7 +176,7 @@ class MMFSetupFile(object):
         Parameters:
         ----------
         look_up_name: string
-            key for the dictionarry. Includes * and new line caracter
+            key for the dictionarry. Includes * and new line caracter \n
         mentry: float, string, list or array
             entry that should replace the entry under key string. If the
             key was not existent before, it is added.
@@ -193,7 +193,7 @@ class MMFSetupFile(object):
         Parameters:
         ----------
         look_up_name: string
-            key for the dictionarry. Includes * and new line caracter
+            key for the dictionarry. Includes * and new line caracter \n
 
         Returns:
         --------
@@ -890,6 +890,8 @@ class MMF_MASTER(object):
         mdict: dictionarry
             dictionarry with inputs, keys are: RAA, SAA, SZA, TAA, el_ang,
             scan_idx, doy, year, o4used, ae, tg. The latter two are dicts.
+        ancil: dict
+            ancil data dict such as temperature and aerosol properties
         '''
         self.settings = settings
         self.mdict = mdict
@@ -1061,9 +1063,10 @@ class MMF_MASTER(object):
                     else:
                         if self.ancil["aodapriori"].ndim == 1:
                             ae_tau = self.ancil["aodapriori"]
-                        ae_tau = np.interp(
-                            gasdict["wavelength"], self.ancil["aewav"],
-                            self.ancil["aodapriori"][ii])
+                        else:
+                            ae_tau = np.interp(
+                                gasdict["wavelength"], self.ancil["aewav"],
+                                self.ancil["aodapriori"][ii])
                     if "LOW_APRI" in run:
                         ae_tau = ae_tau*SETDICT["settings"]["test_apriori_aod_factor"]
                 if (self.ancil["aeasym"]).ndim == 1:
@@ -1072,7 +1075,7 @@ class MMF_MASTER(object):
                     asy = np.interp(gasdict["wavelength"], self.ancil["aewav"],
                                     self.ancil["aeasym"][ii])
                 if (self.ancil["aessa"]).ndim == 1:
-                    ssa = self.mdict["aessa"][ii]
+                    ssa = self.ancil["aessa"][ii]
                 else:
                     ssa = np.interp(gasdict["wavelength"], self.ancil["aewav"],
                                     self.ancil["aessa"][ii])
@@ -1396,7 +1399,7 @@ def mmf_stand_alone(settings, ancil, mdict, outputname):
         settings dictionarry with keys: do_ae, do_tg, lower_el_ang_limit
         mmfconfigs, mmfexe_ae, mmfexe_tg, mmfinputs, mmfinputs_specific,
         mmftempdir, configuration, multiprocs, procs, dimension_names
-    acil: dict
+    ancil: dict
         ancilary data dictionarry with keys: TPheight, aeasym, aessa,
         aewav, angstrom_exponent, aodapriori, pressure, surface_albedo,
         temperature
