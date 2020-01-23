@@ -613,6 +613,14 @@ def datetime2fracday(mdatetime):
         fday = timedelta.days+timedelta.seconds/(24*60*60)+1
     return fday
 
+def ymlload(myfile):
+    with open(myfile) as fid:
+        if float(yaml.__version__.split(".")[0]) >= 5:
+            mdict = yaml.load(fid, Loader=yaml.Loader)
+        else:
+            mdict = yaml.load(fid)
+    return mdict
+
 def convert2mjd2000(doy, year):
     '''
     Funtion to convert fractional DOY and YEAR to Fractional day since 2000
@@ -631,7 +639,7 @@ def convert2mjd2000(doy, year):
         the number of fractional days since 01/01/2000
 
     '''
-    if np.array(year).size == 1 and np.array(doy).size == 1:
+    if np.array(year).shape == () and np.array(doy).shape == ():
         mydate = datetime2mjd2000(doy, year)
     else:
         mydate = []
