@@ -6,6 +6,7 @@ You need vlidort2.7 to be able to run MexicanMaxdoasFit (MMF).
 ## To compile the fortran core of MMF together with vlidort:
   * put the RETRIEVAL folder inside the vlidort folder with folders fo_main_1p4, util, vlidort_main, vlidort_def, vsup, vlidort_s_test
   * put the files makefile and make_code.py in that same folder.
+  * create empty folders mod and obj inside that same folder
   * run python3.7 make_code.py from within that folder
     (you might need to adjust some limits in the vlidort_pars.f90 file, e.g. layer limit or angle limit)
 
