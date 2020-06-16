@@ -9,7 +9,7 @@ module atmosconditions
 
 
 use constants 
-use strings
+use strings, only: parse
 use sorting, only:  Sort
 
 implicit none

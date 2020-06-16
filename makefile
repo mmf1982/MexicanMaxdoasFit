@@ -234,7 +234,6 @@ NO2_SOURCES += \
    $(VLID_RET_PATH)/sorting.f90          \
    $(VLID_RET_PATH)/handle_setupfile.f90 \
    $(VLID_RET_PATH)/apriori_sa_read.f90 \
-   $(VLID_RET_PATH)/precmod.f90          \
    $(VLID_RET_PATH)/stringmod.f90        \
    $(VLID_RET_PATH)/readinput.f90        \
    $(VLID_RET_PATH)/aerosolread.f90      \
@@ -251,7 +250,6 @@ AEROSOL_SOURCES += \
    $(VLID_RET_PATH)/sorting.f90          \
    $(VLID_RET_PATH)/handle_setupfile.f90 \
    $(VLID_RET_PATH)/apriori_sa_read.f90 \
-   $(VLID_RET_PATH)/precmod.f90          \
    $(VLID_RET_PATH)/stringmod.f90        \
    $(VLID_RET_PATH)/readinput.f90        \
    $(VLID_RET_PATH)/aerosolread.f90      \

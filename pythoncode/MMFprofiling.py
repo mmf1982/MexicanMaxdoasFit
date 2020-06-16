@@ -5,8 +5,8 @@ These were designed originally for work within FRM4DOAS and build upon the
 routines developed for UNAM between 2014 and 2017.
 
 Author:  Martina M Friedrich
-Date:  August 2018
-Version:  2019.09
+Date:  August 2018 -- April 2020
+Version:  2020.04
 
 MMF is a retrieval code for MAX-DOAS measurements. It uses VLIDORT as forward
 model and uses a 2 step approach: First, o4 SCD are used for aerosol profile
@@ -23,11 +23,14 @@ concentration at level center in molec/ cm**3.
 The core MMF code takes plain text files as input and outputs plain text files.
 It works on a scan-by-scan basis. Each time the algorithm is called, it needs
 the following files as input:
-setup.txt
-temppress_data.txt
-apriori_heights.txt
-gas_apriori.txt aerosol_apriori.txt
-qdoas.asc output file
+* setup.txt
+* temppress_data.txt
+* apriori_heights.txt
+* gas_apriori.txt
+* aerosol_apriori.txt
+* qdoas.asc
+
+It is available via [MMF github] (https://github.com/mmf1982/MexicanMaxdoasFit)
 '''
 
 import os
@@ -52,7 +55,7 @@ try:
 except ImportError:
     from . import yaml_netcdf4 as yn
 
-SETDICT = {}
+SETDICT = {}  ## initialization of the settings dictionary
 
 def initialize(mfile):
     '''
@@ -64,10 +67,10 @@ def initialize(mfile):
         path to configuration file containing general configurations
         frm4doas_tropo.cnf:
         need at least:
-            GSETTINGS["DEBUG"]
-            REALDIMS["MAXAXIS"]
-            SYSERRFRAC[gasname]
-            DEFAULTS["aod_apriori"]
+        - GSETTINGS["DEBUG"]
+        - REALDIMS["MAXAXIS"]
+        - SYSERRFRAC[gasname]
+        - DEFAULTS["aod_apriori"]
     '''
     _ = TM.initialize(mfile)
     return
@@ -89,8 +92,11 @@ def processwrapper(inputs, outputs):
         in the case of MMF, each entry in the queue is a tuple of
         (scan number, list)
         list is a list of:
-            scd, avk, profile (for tracegas) or
-            aod, scd, avk, profile (for aerosol)
+        - scd, avk, profile (for tracegas) or
+        - aod, scd, avk, profile (for aerosol)
+
+    Returns:
+    --------
     '''
     for func, pos in iter(inputs.get, "STOP"):
         if TM.GSETTINGS["DEBUG"]:
@@ -104,10 +110,18 @@ def clean_mmf(mdirectory):
     '''
     clean the mmf working directory of all files and sub directories
 
+    The fortran core of MMF reads and writes its output to disk, hence there need
+    to be directory (for each scan) temporarily created, where these files are
+    stored. This function deletes this directory, after the output from the
+    fortran code is processed by the python part of the code.
+
     Parameters:
     ----------
     mdirectory: string
         path to directory to remove
+
+    Returns:
+    --------
     '''
     shutil.rmtree(mdirectory)
     return
@@ -117,7 +131,7 @@ class MMFSetupFile(object):
     '''
     class for MMF setupfile handling
 
-    The caracter indicating a header in that file is "!". The caracter for a
+    The caracter indicating a header in setup files is "!". The caracter for a
     new input key is "*".
     This file is processed by the fortran MMF implementation and hence the
     format cannot be changed easily. The "keys" have specific names, too.
@@ -135,26 +149,32 @@ class MMFSetupFile(object):
         ----------------
         content: list
             a line by line list of the file content
-        mdict: dictionarry
+        mdict: dictionary
             lines starting with * are interpreted as keys, following lines
             as the entry
         header: list of strings string
             original header that will be re-produced in the new file
         '''
         mfile = open(filename, "r")
-        self.content = mfile.readlines()
+        self.content = mfile.readlines()  ## line by line list of file content
         mfile.close()
-        self.mdict = OrderedDict()
+        self.mdict = OrderedDict()  ## setup file content as dict
         self.process_file()
-        self.header = [line for line in self.content if line[0] in "!"]
+        self.header = [line for line in self.content if line[0] in "!"]  ## header of setup file
 
     def process_file(self):
         '''
-        read input file into dictionarry.
+        read input file into dictionary.
 
         Lines that start with * are treated as the key, following lines, until
         the next line with * are treated as the value. This format is needed
         by the MMF fortran implementation.
+
+        Parameters:
+        -----------
+
+        Returns:
+        --------
         '''
         for line in self.content:
             if "*" in line[:3]:
@@ -171,15 +191,18 @@ class MMFSetupFile(object):
 
     def update(self, look_up_name, mentry):
         '''
-        add entry to inputfile dictionarry, or update existing.
+        add entry to inputfile dictionary, or update existing.
 
         Parameters:
         ----------
         look_up_name: string
-            key for the dictionarry. Includes * and new line caracter \n
+            key for the dictionary. Includes * and new line caracter \n
         mentry: float, string, list or array
             entry that should replace the entry under key string. If the
             key was not existent before, it is added.
+
+        Returns:
+        --------
         '''
         if isinstance(mentry, (list, np.ndarray)):
             mentry = "\n".join([str(ii) for ii in mentry])
@@ -188,12 +211,12 @@ class MMFSetupFile(object):
 
     def get_entry(self, look_up_name):
         '''
-        extract entry from dictionarry
+        extract entry from dictionary
 
         Parameters:
         ----------
         look_up_name: string
-            key for the dictionarry. Includes * and new line caracter \n
+            key for the dictionary. Includes * and new line caracter \n
 
         Returns:
         --------
@@ -210,12 +233,15 @@ class MMFSetupFile(object):
 
     def writefile(self, newfilename):
         '''
-        write the inputfile dictionarry in the form of an input file
+        write the inputfile dictionary in the form of an input file
 
         Parameter:
         ----------
         newfilename: string
             filename including path to file to save
+
+        Returns:
+        --------
         '''
         mfile = open(newfilename, "w")
         for line in self.header:
@@ -234,10 +260,10 @@ class MMFresults(dict):
     '''
     class to hold MMF results from either tg or aer, derived from dict
 
-    MMFresults is a dictionarry with some additional functionality, such as
+    MMFresults is a dictionary with some additional functionality, such as
     to gather several entries (from different scans) in the values part into an
     array with a single key: from a list of dictionarries, it makes a
-    dictionarry containing arrays.
+    dictionary containing arrays.
     '''
     allkeys = ["aod", "aod_err", "vcd_err", "p_aod", "scd_sim", "scd_meas",
                "scd_meas_err", "profile", "apriori", "avk",
@@ -252,7 +278,7 @@ class MMFresults(dict):
         '''
         Constructor of MMFresults
 
-        In initializes the dictionarry-type MMFresults with empty lists for
+        In initializes the dictionary-type MMFresults with empty lists for
         a range of keys, fitting both aer and tg retrievals.
         '''
         super(MMFresults, self).__init__()
@@ -316,8 +342,10 @@ class MMF(object):
     '''
     def __init__(self, workdir, tph, instr_height, scannumber, mmf_spec,
                  gasdict, raa, sza, el_ang, ae_profile, ae_tau, xgas,
-                 mmfinputs, tgexe, aeexe, ae_asym, ae_ssa, albedo):
+                 mmfinputs, tgexe, aeexe, ae_asym, ae_ssa, albedo, apri_name=None):
         '''
+        constructor of MMF
+
         Parameters:
         -----------
         workdir: string
@@ -332,7 +360,7 @@ class MMF(object):
         mmf_spec: string
             path to mmf station specific input, such as: setup blueprint and
             a-priori files.
-        gasdict: dictionarry
+        gasdict: dictionary
             having at least members: dscd, dscd_err, wavelength, name
         raa: float
             relative solar zenith angle (average for scan)
@@ -359,6 +387,8 @@ class MMF(object):
             aerosol single scattering albedo
         albedo: scalar float
             surface albedo
+        apri_name: str
+            name of apriori file (gas)
         '''
         try:
             os.makedirs(workdir, mode=0o775)
@@ -381,7 +411,7 @@ class MMF(object):
         self.ssa = ae_ssa
         self.asy = ae_asym
         interm = self.writesetup(gasdict["wavelength"], instr_height,
-                                 ae_profile, ae_tau, xgas, albedo)
+                                 ae_profile, ae_tau, xgas, albedo, apri_name)
         self.confname = interm[0]
         self.sa_scaling = interm[1]
         self.sa_correlation_length = interm[2]
@@ -396,6 +426,9 @@ class MMF(object):
         -----------
         tph: 2D array
             one line per altitude level, each line: altitude/ km, P/ hPa, T/ K
+
+        Returns:
+        --------
         '''
         with open(self.workdir + SETDICT["settings"]["TPNAME"], 'w') as fid:
             fid.write("altitude (km) \t pressure (hPa) \t temp (K) \n")
@@ -403,13 +436,14 @@ class MMF(object):
                 fid.write("  ".join(line) + "\n")
         return
 
-    def writesetup(self, wavl, instr_height, ae_profile, ae_tau, xgas, albedo):
+    def writesetup(self, wavl, instr_height, ae_profile, ae_tau, xgas, albedo,
+                   apri_name=None):
         '''
         write setup txt file for fortran code
 
         Parameters:
         -----------
-        wavl: 1x1 array
+        wavl: 1 x 1 array-like
             wavelength in nm
         instr_height: str
             str of instrument height in km
@@ -459,7 +493,10 @@ class MMF(object):
                           np.array([str(np.squeeze(ae_tau)),
                                     str(np.squeeze(self.asy)),
                                     str(np.squeeze(self.ssa))]))
-            if "hcho" in xgas.lower():
+            if apri_name is not None:
+                msetup.update("* apriori profile filename\n",
+                              '"'+self.mmfinputs_specific + apri_name+'"')
+            elif "hcho" in xgas.lower():
                 msetup.update("* apriori profile filename\n",
                               '"'+self.mmfinputs_specific + 'hcho_apriori.txt"')
             elif "no2" in xgas.lower():
@@ -505,14 +542,14 @@ class MMF(object):
         The format needed for the fortran routine in the QDOAS.asc file is:
         integer of number of lines (number of el ang measurements) followed by:
             sza, raa, el ang, dscd, dscd err
-        a minimum dscd err of 0.5 percent of the dscd is assumed
+        a minimum dscd err of 0.1 percent of the dscd is assumed
         '''
         ascname = self.workdir + "QDOAS.asc"
         # mask = ~np.isnan(gasobj.dscd)
         # mask = np.isnan(gasobj.dscd)
         # I am currently not using any mask here
         if sza >= 90.0 or sza <= 0.0:
-            mreturn = "[MMFprofiling.py] ERROR, sza is out of range: "+str(sza)
+            mreturn = "[MMFprofiling.py] WARNING, sza is out of range: "+str(sza)
         else:
             mreturn = None
         raa_matrix = np.ones(el_ang.shape)*raa
@@ -666,7 +703,7 @@ class MMF(object):
         Returns:
         --------
         results: dict
-            results dictionarry with the same keys as run_ae, but not all have
+            results dictionary with the same keys as run_ae, but not all have
             content.
 
         TODO:
@@ -846,7 +883,7 @@ class MMF(object):
             mask = elang < 100.
         else:
             mask = elang < SETDICT["settings"]["elang_limit"]
-        err_min = np.fmax(err, SETDICT["settings"]["minimum_frac_error"]*meas)
+        err_min = np.fmax(err, SETDICT["settings"]["minimum_frac_error"]*np.abs(meas))
         rms = np.sqrt(np.nanmean(((sim-meas)/err_min)**2))
         # only test purposes
         rms_15 = np.sqrt(np.nanmean(((sim[mask]-meas[mask])/err_min[mask])**2))
@@ -862,9 +899,14 @@ class MMF(object):
 
 def ini_mmf(mpath):
     '''
+    Parameters:
+    -----------
     mpath: string
         path to mmf configuration file mmf_settings.yml containing:
         SIG_DIC, flags, flag_limits, settings
+
+    Returns:
+    --------
     '''
     global SETDICT
     with open("/".join([mpath, "mmf_settings.yml"])) as fid:
@@ -875,10 +917,10 @@ class MMF_MASTER(object):
     '''
     Master class to run MMF stand alone or within FRM4DOAS framework
 
-    After making an MMF_MASTER object, call routine run
+    After making an MMF_MASTER object, call routine run on it.
     '''
 
-    def __init__(self, settings, mdict, ancil):  # settings
+    def __init__(self, settings, mdict, ancil):
         '''
         Initialize MMF
 
@@ -887,17 +929,22 @@ class MMF_MASTER(object):
         settings: dict
             settings dict with keys: mmftempdir, mmfconfigs, mmfexe_ae,
             mmfexe_tg, mmfinputs, multiprocs, procs
-        mdict: dictionarry
-            dictionarry with inputs, keys are: RAA, SAA, SZA, TAA, el_ang,
+        mdict: dict
+            dictionary with inputs, keys are: RAA, SAA, SZA, TAA, el_ang,
             scan_idx, doy, year, o4used, ae, tg. The latter two are dicts.
         ancil: dict
-            ancil data dict such as temperature and aerosol properties
+            ancil data dict with keys: TPheight, aeasym, aessa, aewav,
+            angstrom_exponent, pressure, surface_albedo, temperature, aod_apriori
         '''
         self.settings = settings
         self.mdict = mdict
         self.ancil = ancil
         self.do_mmf = True
         ini_mmf(settings["mmfconfigs"])  # setting setdict
+        # overwrite general settings in SETDICT["settings"] with
+        # specifc ones from settings, if they are there
+        if "MMFSETUP" in self.settings:
+            SETDICT["settings"]["MMFSETUP"] = self.settings["MMFSETUP"]
         try:
             self.extra_error = settings["extra_error"]
         except KeyError:
@@ -910,7 +957,7 @@ class MMF_MASTER(object):
         Returns:
         --------
         mmf_results: dict
-            results from MMF in form of a dictionarry, each value is a
+            results from MMF in form of a dictionary, each value is a
             MMFobject
         erc: integer
             outgoing errorcode
@@ -1013,16 +1060,17 @@ class MMF_MASTER(object):
         for run in runlist:
             reslist = []
             mmf = []
+            if is_tracegas and run == "NORMAL":
+                aod_limit_flag = np.zeros(len(self.mdict["scan_idx"]))
             for ii, scan in enumerate(self.mdict["scan_idx"]):
                 gasdict = {"dscd": mgas["dscd"][ii],
                            "dscd_err": mgas["dscd_err"][ii],
                            "wavelength": mgas["wavelength"],
                            "name": name}
-                # This was only for testing
-                # if self.extra_error:  # only if it was not included already
-                #    gasdict["dscd_err"][2:] = np.sqrt(
-                #        np.nanmax(mgas["dscd_extra_err"][ii][:2]
-                #                  )**2+mgas["dscd_err"][ii][2:]**2)
+                if self.extra_error:  # only if it was not included already
+                    gasdict["dscd_err"][2:] = np.sqrt(
+                        np.nanmax(mgas["dscd_extra_err"][ii][:2]
+                                  )**2+mgas["dscd_err"][ii][2:]**2)
                 if is_tracegas:
                     # check for scan consistence, otherwise break out of loop?
                     if "LOW_APRI" in run:
@@ -1050,6 +1098,9 @@ class MMF_MASTER(object):
                                                  inputs[1]["scan_number"][ii]))
                         ae_prof = inputs[1]["profile"][ii]
                         ae_tau = inputs[1]["aod"][ii]
+                        aod_limit_flag[ii] = (
+                            ae_tau > SETDICT["flag_limits"]["aod_limit"]
+                            ) * SETDICT["flags"]["aod_limit"]
                         if self.ancil["angstrom_exponent"][ii] != 0:
                             ae_tau = (
                                 (float(mgas["wavelength"]) / float(
@@ -1058,15 +1109,15 @@ class MMF_MASTER(object):
                                 )**(-self.ancil["angstrom_exponent"][ii])*ae_tau)
                 else:
                     ae_prof = None
-                    if self.ancil["aodapriori"] is None:
+                    if self.ancil["aod_apriori"] is None:
                         ae_tau = TM.DEFAULTS["aod_apriori"]
                     else:
-                        if self.ancil["aodapriori"].ndim == 1:
-                            ae_tau = self.ancil["aodapriori"]
+                        if self.ancil["aod_apriori"].ndim == 1:
+                            ae_tau = self.ancil["aod_apriori"]
                         else:
                             ae_tau = np.interp(
                                 gasdict["wavelength"], self.ancil["aewav"],
-                                self.ancil["aodapriori"][ii])
+                                self.ancil["aod_apriori"][ii])
                     if "LOW_APRI" in run:
                         ae_tau = ae_tau*SETDICT["settings"]["test_apriori_aod_factor"]
                 if (self.ancil["aeasym"]).ndim == 1:
@@ -1082,6 +1133,10 @@ class MMF_MASTER(object):
                 tph = np.transpose(
                     np.stack([self.ancil["TPheight"], self.ancil["pressure"][ii],
                               self.ancil["temperature"][ii]]))
+                if "apriori_name" in self.settings.keys():
+                    apriname = self.settings["apriori_name"]
+                else:
+                    apriname = None
                 mmf.append(MMF(
                     self.settings["mmftempdir"], tph.astype(str),
                     str(self.mdict["z_detector"]), scan,
@@ -1090,7 +1145,7 @@ class MMF_MASTER(object):
                     self.mdict["el_ang"][ii], ae_prof, ae_tau,
                     xgas, self.settings["mmfinputs"], self.settings["mmfexe_tg"],
                     self.settings["mmfexe_ae"], asy, ssa,
-                    self.ancil["surface_albedo"]))
+                    self.ancil["surface_albedo"], apriname))
                 if self.settings["multiprocs"]:
                     if is_tracegas:
                         task_queue.put((mmf[-1].run_tg, scan))
@@ -1120,6 +1175,12 @@ class MMF_MASTER(object):
                     reslist.append(mres)
             mmf_result = MMFresults()
             local_erc = mmf_result.join(reslist)
+            if is_tracegas and run == "NORMAL":
+                mmf_result["flag"] = aod_limit_flag + mmf_result["flag"]
+            elif run == "NORMAL":
+                mmf_result["flag"] = (
+                    mmf_result["aod"] > SETDICT["flag_limits"]["aod_limit"]
+                    ) * SETDICT["flags"]["aod_limit"] + mmf_result["flag"]
             results_all[run] = mmf_result
         if not is_tracegas:
             extra = self.check_consistence(
@@ -1152,6 +1213,7 @@ class MMF_MASTER(object):
         '''
         fraction = np.maximum(
             normal["aod"]/test["aod"], test["aod"]/normal["aod"])
+        # print("***********fraction \n", fraction)
         mask = fraction > SETDICT["flag_limits"]["stability_aod_warn"]
         if mask.sum() > 0:
             test = {key: test[key][mask] for key in test.keys() if
@@ -1162,19 +1224,19 @@ class MMF_MASTER(object):
 
     def output(self, mmf_aerosols, mmf_tracegases):
         '''
-        Collect data into a single results dictionarry with correct keys
+        Collect data into a single results dictionary with correct keys
 
         Parameters:
         -----------
-        mmf_aerosols: dictionarry
-            dictionarry holding aerosol results
-        mmf_tracegases: dictionarry
-            dictionarry holding tracegas results
+        mmf_aerosols: dictionary
+            dictionary holding aerosol results
+        mmf_tracegases: dictionary
+            dictionary holding tracegas results
 
         Returns:
         -------
-        mmfout: dictionarry
-            results dictionarry with keys as nc paths and values as dict
+        mmfout: dictionary
+            results dictionary with keys as nc paths and values as dict
             containing the value, FillValue, units, description, name
         '''
         with open(os.path.join(self.settings["mmfconfigs"],
@@ -1318,7 +1380,7 @@ def interpolate_data_right(mentry, mdata, mmfheights, desired_heights):
     Parameters:
     -----------
     mentry: dict
-        needs to have key "dimensions", these are dimensions of mdata
+        needs key "dimensions" and there "DIM_LAYERS", these are mdata dimensions
     mdata: array like
         input data to be interpolated
     mmfheights: array like
@@ -1391,20 +1453,20 @@ def interpolate_data_right(mentry, mdata, mmfheights, desired_heights):
 
 def mmf_stand_alone(settings, ancil, mdict, outputname):
     '''
-    Routine to call if mmf is run as a stand alone code
+    Routine to call if mmf is run as a stand alone code. Not part of FRM4DOAS
 
     Parameters:
     -----------
     settings: dict
-        settings dictionarry with keys: do_ae, do_tg, lower_el_ang_limit
+        settings dictionary with keys: do_ae, do_tg, lower_el_ang_limit
         mmfconfigs, mmfexe_ae, mmfexe_tg, mmfinputs, mmfinputs_specific,
         mmftempdir, configuration, multiprocs, procs, dimension_names
     ancil: dict
-        ancilary data dictionarry with keys: TPheight, aeasym, aessa,
-        aewav, angstrom_exponent, aodapriori, pressure, surface_albedo,
+        ancilary data dictionary with keys: TPheight, aeasym, aessa,
+        aewav, angstrom_exponent, aod_apriori, pressure, surface_albedo,
         temperature
     mdict: dict
-        measurement data dictionarry with keys: RAA, SZA, RAA, (TAA), ae, tg
+        measurement data dictionary with keys: RAA, SZA, RAA, (TAA), ae, tg
         (doy), el_ang, (year), o4used, scan_idx, z_detector
     outputnames: str
         name of output netCDF4 file to be created
@@ -1428,7 +1490,7 @@ def mmf_stand_alone(settings, ancil, mdict, outputname):
 
 def test_run(settings_loc, ancil_loc, mdict_loc):
     '''
-    Test the program with the supplied test files.
+    Test the program with the supplied test files. Not part of FRM4DOAS
 
     Parameters:
     -----------
@@ -1468,7 +1530,10 @@ def test_run(settings_loc, ancil_loc, mdict_loc):
     stop = time.time()
     print(stop-start)
 
-if __name__ == "__main__":
+def main():
+    '''
+    run the supplied test, if used as stand_alone code. Not FRM4DOAS
+    '''
     if len(sys.argv) == 4:
         (SETTINGS_F, ANCIL_F, MDICT_F) = sys.argv[1:4]
     else:
@@ -1476,3 +1541,8 @@ if __name__ == "__main__":
         ANCIL_F = "TESTDATA/ANCIL.yml"
         MDICT_F = "TESTDATA/MEAS.yml"
     test_run(SETTINGS_F, ANCIL_F, MDICT_F)
+
+if __name__ == "__main__":
+    main()
+
+

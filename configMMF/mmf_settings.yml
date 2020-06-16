@@ -22,24 +22,26 @@ flags:
     rms_warn: 2
     converged: 16
     converged_warn: 0
+    aod_limit: 512
 
 flag_limits:
+    aod_limit: 8
     stability_vcd: 1.1  # more variety than this error
-    stability_vcd_warn: 1.05  # more varietey than this warning
+    stability_vcd_warn: 1.01  # more varietey than this warning
     stability_aod: 1.6  # more variety than this error
-    stability_aod_warn: 1.1  # more variety than this warning
-    dof: 1.2   # dof below this error
+    stability_aod_warn: 1.01  # more variety than this warning
+    dof: 1.3   # dof below this error
     dof_warn: 1.6   # dof below this warn
-    rms: 5  # rms in measurement error units above which error
-    rms_warn: 3  # rms in measurement error units above which warn
+    rms: 4  # rms in measurement error units above which error
+    rms_warn: 2  # rms in measurement error units above which warn
     converged: 2 # if is this or above, error
     converged_warn: 1  # it is this, warning
 
 settings:
     MMFSETUP: "setup.txt"
     TPNAME: "temppress_data.txt"
-    test_apriori_aod_factor: 0.2  # factor by which to change a priori for testing
-    elang_limit: 14  # upper limit (exclusive) for rms calculation for flagging
-    minimum_frac_error: 0.02  # fraction of inherent measurement error for flag
+    test_apriori_aod_factor: 0.1  # factor by which to change a priori for testing
+    elang_limit: 20  # upper limit (exclusive) for rms calculation for flagging
+    minimum_frac_error: 0.03  # fraction of inherent measurement error for flag
     is_error: 31.5  # so an error on converged still is only a warning
     outputconfigname: mmf_output.yml

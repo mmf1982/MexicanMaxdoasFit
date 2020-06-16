@@ -3,7 +3,7 @@ TPheight: [61.194, 56.489, 52.313, 48.908, 46.122, 43.747, 41.704, 39.863, 38.2,
   19.929, 18.692, 17.503, 16.399, 15.338, 14.354, 13.404, 12.529, 11.69, 10.918, 10.162,
   9.454, 8.749, 8.086, 7.426, 6.809, 6.197, 5.631, 5.072, 4.561, 4.06, 3.609, 3.168,
   2.777, 2.397, 2.068, 1.75, 1.481, 1.222, 1.012, 0.811, 0.656, 0.508, 0.404, 0.303,
-  0.243, 0.182, 0.156, 0.122]
+  0.243, 0.182, 0.156, 0.122]  # this is in km, decending
 aeasym: # this is 2dimensional: time x wavelength
 - [0.68]
 - [0.68]
@@ -71,7 +71,7 @@ angstrom_exponent: # this is 2dimensional: time x 1
 - [1.0]
 - [1.0]
 - [1.0]
-aodapriori: null # this should be 2dimensional if given: time x wavelength
+aod_apriori: null # this should be 2dimensional if given: time x wavelength
 pressure: # this is 2dimensional: height x time
 - [0.1114, 0.254, 0.4451, 0.6948, 1.0039, 1.3789, 1.8191, 2.3445, 2.9595, 3.7083,
   4.6102, 5.7514, 7.1605, 8.9566, 11.176, 13.9909, 17.4669, 21.8451, 27.2393, 33.9978,
@@ -220,7 +220,7 @@ pressure: # this is 2dimensional: height x time
   530.1145, 568.4693, 607.0973, 644.9065, 682.3601, 718.366, 753.4086, 786.4189, 817.9276,
   846.9195, 873.9658, 898.1266, 920.0317, 938.8686, 955.3187, 968.7351, 979.84, 988.2258,
   994.6565, 999.0183, 1002.0961]
-surface_albedo: [0.06]   # this is 1dimensional: 1
+surface_albedo: [0.06]   # this is 1dimensional: 1  # i.e. not wavelength, just 1
 temperature:  # this is 2dimensional: height x time
 - [243.3403, 252.8275, 258.4331, 258.6834, 256.014, 252.4481, 248.6616, 244.4866,
   239.8258, 234.5641, 229.0418, 223.4446, 218.4328, 214.1242, 210.8706, 208.7353,

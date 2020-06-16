@@ -57,17 +57,17 @@ def wrap_get_var(mfh, key):
         try:
             out = mfh[keys[0]].getncattr(keys[1])
         except AttributeError as exc:
-            TM.write_error("ATTR NOT FOUND "+keys[1]+"in"+keys[0], exc,
+            TM.write_error("ATTR NOT FOUND "+keys[1]+" in "+keys[0], exc,
                            error=False, printtrace=False)
             out = None
     else:
         try:
             out = _get_variables(mfh[key], True, False)
         except KeyError as exc:
-            TM.write_error("VAR NOT FOUND "+key+"in"+mfh.path, exc, error=False)
+            TM.write_error("VAR NOT FOUND "+key+" in "+mfh.path, exc, False, False)
             out = None
         except IndexError as exc:
-            TM.write_error("VAR NOT FOUND "+key+"in"+mfh.path, exc, error=False)
+            TM.write_error("VAR NOT FOUND "+key+" in "+mfh.path, exc, False, False)
             out = None
     return out
 
@@ -96,7 +96,7 @@ def initialize(mfile):
 
 def nc_to_dict(netcdf4data, alsodata=False, adjstfv=True):
     '''
-    get the structure of a netcdf4 file in a dictionarry structure
+    get the structure of a netcdf4 file in a dictionary structure
 
     Parameters:
     ----------
@@ -110,8 +110,8 @@ def nc_to_dict(netcdf4data, alsodata=False, adjstfv=True):
     Returns:
     ---------
     mygr: dict
-        The dictionarry containing the structure of the netCDF4 file
-        all attributs are inside a key "attributes", again as dictionarry
+        The dictionary containing the structure of the netCDF4 file
+        all attributs are inside a key "attributes", again as dictionary
         additionally, all variables have keys for:
         dataype, dimensions, mask, name, units, scale
     '''
@@ -130,7 +130,7 @@ def yaml_to_nc(yamlfile, ncfile, dimdict=None):
     ncfile: string
         path to the output nc file
     [dimdict: dict
-        dictionarry containing as keys all dimensions that are used in the yaml
+        dictionary containing as keys all dimensions that are used in the yaml
         file. If not present, yamlfile needs to contain them. ]
     '''
     with open(yamlfile) as mfile:
@@ -143,17 +143,17 @@ def yaml_to_nc(yamlfile, ncfile, dimdict=None):
 
 def dict_to_nc(mdict, ncfilename, dims=None):
     '''
-    turn dictionarry into an nc file. Also need a dict with dimensions
+    turn dictionary into an nc file. Also need a dict with dimensions
 
     Parameters:
     -----------
     mdict: dict
-        dictionarry containing nc file structure.
+        dictionary containing nc file structure.
     ncfilename: string
         path to the output nc file
     dims: dict
-        dictionarry containing as keys all dimensions that are used in the yaml
-        file. If dims is None, then the yaml dictionarry for dimensions need to
+        dictionary containing as keys all dimensions that are used in the yaml
+        file. If dims is None, then the yaml dictionary for dimensions need to
         be filled
 
     '''
@@ -222,16 +222,16 @@ def extract_essentials(mdict_in):
 
     Parameters:
     -----------
-    mdict_in: dictionarry
-        The complete dictionarry represeting the structure of a netCDF file
+    mdict_in: dictionary
+        The complete dictionary represeting the structure of a netCDF file
         This can be either directly from a netCDF file loaded with
         nc_to_dict or also with yaml.load of a saved yaml file created
         with yaml_dump. It can also be a sub-directory.
 
     Returns:
     --------
-    odict: dictionarry
-        reduced dictionarry: removed dublicated variables and groups
+    odict: dictionary
+        reduced dictionary: removed dublicated variables and groups
     '''
     mdict = copy.deepcopy(mdict_in)
     keylist = list(mdict.keys())
@@ -310,8 +310,8 @@ def _get_attributes(parent, adjstfv=False):
 
     Returns:
     -------
-    attr_dict: dictionarry
-        dictionarry containing all attributes as key: value pairs
+    attr_dict: dictionary
+        dictionary containing all attributes as key: value pairs
     '''
     attr_dict = {}
     allattr = parent.ncattrs()
@@ -352,8 +352,8 @@ def _get_groups(parent, alsodata, adjstfv):
 
     Returns:
     -------
-    group_dict: dictionarry
-        dictionarry containing all groups/ variables as key: value pairs
+    group_dict: dictionary
+        dictionary containing all groups/ variables as key: value pairs
         also, the parents attributes are saved under the key "attributes"
     '''
     group_dict = {}
@@ -370,6 +370,14 @@ def _get_groups(parent, alsodata, adjstfv):
             parent[var_name], alsodata, adjstfv)
     return group_dict
 
+def get_group(ncfilename, groupname=None):
+    with netCDF4.Dataset(ncfilename, "r") as ncfile:
+        if groupname is None:
+            mgr = _get_groups(ncfile, True, False)
+        else:
+            mgr = _get_groups(ncfile[groupname], True, False)
+    return mgr
+
 def _get_variables(parent, alsodata, adjstfv):
     '''
     get a variable in passed netCDF4 file or group
@@ -385,8 +393,8 @@ def _get_variables(parent, alsodata, adjstfv):
 
     Returns:
     -------
-    var_dict: dictionarry
-        dictionarry containing all info about a variable, if alsodata=True
+    var_dict: dictionary
+        dictionary containing all info about a variable, if alsodata=True
         also contains the data
     '''
     var_dict = {}
@@ -523,7 +531,7 @@ def _make_dimensions(dims, parent):
     Parameters:
     -----------
     dims: dict
-        a dictionarry of dimensions that need to be created in parent
+        a dictionary of dimensions that need to be created in parent
     parent: nc group or file handle
         where to create the dimensions
     '''
@@ -538,7 +546,7 @@ def _create_nc_sub(mdict, key, parent):
     Parameters:
     -----------
     mdict: dict
-        dictionarry what to create
+        dictionary what to create
     key: string
         name of the group/ variable to create
     parent: nc file/ group handle
@@ -582,7 +590,15 @@ def _create_nc_sub(mdict, key, parent):
         try:
             if isinstance(mdict, dict):
                 for key2 in mdict.keys():
-                    _create_nc_sub(mdict[key2], key2, child)
+                    try:
+                        _create_nc_sub(mdict[key2], key2, child)
+                    except:
+                        number = len(child.path.split("/"))-1
+                        myparent=eval("child"+number*".parent")
+                        for mydimension, mylen in zip(mdict[key2]["dimensions"], mdict[key2]["value"].shape):
+                            if mydimension not in myparent.dimensions:
+                                print("creating: ", mydimension, mylen)
+                                myparent.createDimension(mydimension, mylen)
             else:
                 print("is type: ", type(mdict), " for ", key)
         except AttributeError as atr:
@@ -635,21 +651,23 @@ def _create_nc_sub(mdict, key, parent):
                 for atr in attrd:
                     print("    ", atr, attrd[atr])
             try:
-                #if mdict["name"].lower() in "air_mass_factor_of_o3":
-                #    import pdb
-                #    pdb.set_trace()
                 newvar[:] = mdict["value"]
             except IndexError:
-                print("problem: ", mdict["name"], len(mdict["value"]), mdict["dimensions"])
-                newvar[:] = np.array([mdict["value"]])
+                try:
+                    newvar[:] = np.array([mdict["value"]])
+                except:
+                    print("problem: ", mdict["name"], len(mdict["value"]), mdict["dimensions"])
             except ValueError as err:
                 print(" has no value", key)
                 print("err:", err)
             except TypeError as err:
-                print("has a problem", key)
-                print(err)
-                TM.write_error("ee", err)
-                print(mdict.keys(), mdict["value"])
+                try:
+                    newvar[:] = mdict["value"].data
+                except Exception as err:
+                    print("has a Type problem", key)
+                    print(err)
+                    TM.write_error("ee", err)
+                    print(mdict.keys(), mdict["value"])
                 #newvar[:] = [mdict["value"]]
 
     return
@@ -675,7 +693,7 @@ def collapse_keys(mobj, last_key=None, mdc=None):
     Returns:
     -------
     mdc: dict
-        flat dictionarry with collapsed keys containing "/" for each level
+        flat dictionary with collapsed keys containing "/" for each level
 
     Example:
     --------
@@ -705,14 +723,14 @@ def collapse_keys(mobj, last_key=None, mdc=None):
 
 def myupdatedict(dict1, dict2):
     '''
-    make a recurse dictionarry update: update dict1 with dict2
+    make a recurse dictionary update: update dict1 with dict2
 
     Parameters:
     ----------
     dict1: dict
-        dictionarry to update
+        dictionary to update
     dict2: dict
-        dictionarry used for the update
+        dictionary used for the update
     '''
     newdict = {}
     for key in dict1:
@@ -737,12 +755,12 @@ def expand_keys(mdict):
     Parameters:
     ---------
     mdict: dict
-        one-layer dictionarry containing the same info as mdict
+        one-layer dictionary containing the same info as mdict
 
     Returns:
     --------
     newdict: dict
-        nested dictionarry
+        nested dictionary
 
     '''
     newdict = {}

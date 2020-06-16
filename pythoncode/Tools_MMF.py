@@ -46,10 +46,19 @@ def initialize(configname):
         conf = configname
     FILLVALS = conf["FILLVALS"]
     GSETTINGS = conf["GSETTINGS"]
-    REALDIMS = conf["REALDIMS"]
+    try:
+        REALDIMS = conf["REALDIMS"]
+    except KeyError:
+        pass
     ERRCODES = conf["ERRCODES"]
-    DEFAULTS = conf["DEFAULTS"]
-    SYSERRFRAC = conf["SYSERRFRAC"]
+    try:
+        DEFAULTS = conf["SETTINGS"]
+    except KeyError:
+        pass
+    try:
+        SYSERRFRAC = conf["SYSERRFRAC"]
+    except KeyError:
+        pass
     return
 
 
@@ -75,14 +84,14 @@ def translate_var(idn_name, dimdic):
     Parameters:
     -----------
     idn_name: dict
-        yaml_netcdf4 dictionarry for a variable
+        yaml_netcdf4 dictionary for a variable
     dimdic: dict
         dict containing key "dimensions" with keys dimension names
 
     Returns:
     --------
     idn_name: dict
-        yaml_netcdf4 dictionarry for variable with translated dims and fillvals
+        yaml_netcdf4 dictionary for variable with translated dims and fillvals
     '''
     dim = idn_name["dimensions"]
     idn_name["dimensions"] = tuple([dimdic[entr]for entr in dim if entr != ""])
@@ -106,7 +115,7 @@ def set_attributes(handle, attrs):
     handle: netCDF4 group/ file or variable handle
         handle to add attributes to
     attrs: dict
-        dictionarry of attributes to add
+        dictionary of attributes to add
     '''
     handle.setncatts({key: attrs[key] for key in attrs.keys()})
     return
@@ -123,7 +132,7 @@ def get_attributes(handle):
     Returns:
     --------
     mdict: dict
-        dictionarry of attributes that were attached to the handle
+        dictionary of attributes that were attached to the handle
     '''
     keys = handle.ncattrs()
     mdict = {}
@@ -277,10 +286,10 @@ def write_error(message, exc="", error=True, printtrace=True):
     method to print error/ warning message in desired form + produce traceback
 
     [file.py: function] ERROR: message exc (The error raised)
-    ---------------------------------------------------------
+    "---------------------------------------------------------"
     TRACE:
     traceback
-    ---------------------------------------------------------
+    "---------------------------------------------------------"
 
     Parameters:
     -----------
@@ -304,17 +313,19 @@ def write_error(message, exc="", error=True, printtrace=True):
         print("[", where, "] WARNING: " + message + " " + str(exc), flush=True)
     if printtrace:
         if sys.exc_info()[0]:
-            print("_________________________________________________________")
+            print(" ")
+            print("_______________________TRACE START________________________")
             print("TRACE:", flush=True)
             print(traceback.format_exc(), flush=True)
-            print("_________________________________________________________")
+            print("________________________TRACE END_________________________")
+            print(" ")
     return
 
 def versionconvert(version):
     '''
     convert the "free" version into a geoms valid version. Maybe not needed?
 
-    Paramters:
+    Parameters:
     ----------
     version: str, float or int
         version name
@@ -438,7 +449,7 @@ def fracday2datetime(fracday, year):
 
     if np.ndim(fracday) == 0 and np.ndim(year) == 0:
         mdat = datetime.datetime(
-            year, 1, 1, 0, 0, 0) + datetime.timedelta(fracday - 1.0)
+            year, 1, 1, 0, 0, 0, 0) + datetime.timedelta(fracday - 1.0)
     else:
         mdat = []
         for day, yyr in zip(fracday, year):
@@ -506,12 +517,14 @@ def datetime2str(mdat):
     datestr: string
         datestring of the form YYYYMMDDThhmmssZ
     '''
+    if mdat.microsecond >= 500000:
+         mdat = mdat + datetime.timedelta(seconds=1)
     year = str(mdat.year).zfill(4)
     month = str(mdat.month).zfill(2)
     day = str(mdat.day).zfill(2)
     hour = str(mdat.hour).zfill(2)
     minute = str(mdat.minute).zfill(2)
-    secs = str(mdat.second).zfill(2)
+    secs = str(int(mdat.second)).zfill(2)
     datestr = "".join([year, month, day, "T", hour, minute, secs, "Z"])
     return datestr
 
@@ -571,10 +584,9 @@ def datetime2mjd2000(*mdatetime):
         mdatetime = datestr2datetime(mdatetime)
     elif np.isscalar(mdatetime[0]) and len(mdatetime) == 2 and np.isscalar(mdatetime[1]):
         try:
-            mdatetime = fracday2datestr(mdatetime[0], mdatetime[1])
+            mdatetime = fracday2datetime(mdatetime[0], mdatetime[1])
         except np.ma.core.MaskError:
             return np.nan
-        mdatetime = datestr2datetime(mdatetime)
     else:
         if ma.is_masked(mdatetime[0]):
             return np.nan
@@ -583,8 +595,11 @@ def datetime2mjd2000(*mdatetime):
                 "wrong input to datetime2mjd200: " +
                 "no datetime, date string or (fracday, year)")
     try:
-        mdate = (mdatetime-datetime.datetime(2000, 1, 1, 0, 0, 0))
-        fracday = mdate.days + mdate.seconds/datetime.timedelta(1).total_seconds()
+        mdate = (mdatetime-datetime.datetime(2000, 1, 1, 0, 0, 0,))
+        fracday = (mdate.days + 
+                   mdate.seconds/datetime.timedelta(1).total_seconds() 
+                   + mdate.microseconds/
+                   (datetime.timedelta(1).total_seconds()*1.0e6))
     except ma.core.MaskError:
         fracday = np.nan
     return fracday
@@ -624,8 +639,6 @@ def ymlload(myfile):
 def convert2mjd2000(doy, year):
     '''
     Funtion to convert fractional DOY and YEAR to Fractional day since 2000
-
-    This function uses MJD2000 from doas_lib
 
     Parameters:
     -----------
@@ -683,7 +696,7 @@ def unitcheck(mvar, wunit):
     Parameters:
     -----------
     mvar: netCDF4 var or dict with key "units" or "attributes" and then "units"
-        needs to have "units" attribute
+        needs to have "units" attribute, or With_units object
     wunit: string or Unit object
         needs to represent a valid CF Unit
 
@@ -706,7 +719,10 @@ def unitcheck(mvar, wunit):
         else:
             raise ValueError("no units or attributes found for unitcheck")
     else:
-        raise ValueError("unexpected type for unitcheck: " + str(type(mvar)))
+        try:
+            mval = mvar.convert(wunit)
+        except:
+            raise ValueError("unexpected type for unitcheck: " + str(type(mvar)))
     return mval
 
 def get_erc(errocodes):
@@ -774,7 +790,7 @@ def case_sensitive_replace(mstring, instring, outstring):
     string: input string with desired replacements
     '''
     return mstring.replace(instring.upper(), outstring.upper()).replace(
-        instring.lower(), outstring.lower())
+        instring.lower(), outstring.lower()).replace(instring, outstring)
 
 def datestr2fracday(datestring):
     '''

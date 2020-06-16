@@ -9,7 +9,7 @@
 !> uses module strings from Dr. George Benthien, http://gbenthien.net/strings/
 module writeinput
 
- use strings
+ use strings, only: parse
 
  implicit none
 

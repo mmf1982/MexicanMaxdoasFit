@@ -119,16 +119,16 @@ avk_col_aer:
   units: '1'
 avk_col_tg:
   _FillValue: DBL_FILLVAL
-  description: averaging kernel of gas retrieval in terms of VCD
+  description: averaging kernel of gas retrieval in terms of tropospheric VCD
   dimensions: !!python/tuple
     - DIM_SCAN_NAME
     - DIM_LAYERS
   datatype: float32
-  name: tg/averaging_kernel_of_concentration_vertical_column_density
+  name: tg/averaging_kernel_of_tropospheric_vertical_column_density
   units: (molec/cm2)/(molec/cm2)
 avk_tg:
   _FillValue: DBL_FILLVAL
-  description: averaging kernel of gas profile retrieval in terms of layer partial vcd
+  description: averaging kernel of tropospheric gas profile retrieval in terms of layer partial vcd
   dimensions: !!python/tuple
     - DIM_SCAN_NAME
     - DIM_LAYERS
@@ -176,7 +176,7 @@ flag_aer:
   dimensions: !!python/tuple
     - DIM_SCAN_NAME
   datatype: int32
-  name: aer/flag
+  name: aer/qa_flag
   units: '1'
 flag_tg:
   _FillValue: INT_FILLVAL
@@ -184,7 +184,7 @@ flag_tg:
   dimensions: !!python/tuple
     - DIM_SCAN_NAME
   datatype: int32
-  name: tg/flag
+  name: tg/qa_flag
   units: '1'
 flag_detail_aer:
   _FillValue: INT_FILLVAL
@@ -301,6 +301,26 @@ rms_dscd_tg:
   datatype: float64
   name: tg/slant_column_density_rms
   units: '1'
+#rms_r_dscd_aer:
+#  _FillValue: DBL_FILLVAL
+#  description: calculated as square root of mean of square of fraction of the product
+#    of the difference between measured and modeled dscd and the mean of the modeled
+#    and the product of the measured error and the measured dscd
+#  dimensions: !!python/tuple
+#    - DIM_SCAN_NAME
+#  datatype: float64
+#  name: aer/slant_column_density_relative_rms
+#  units: '1'
+#rms_r_dscd_tg:
+#  _FillValue: DBL_FILLVAL
+#  description: calculated as square root of mean of square of fraction of the product
+#    of the difference between measured and modeled dscd and the mean of the modeled
+#    and the product of the measured error and the measured dscd
+#  dimensions: !!python/tuple
+#    - DIM_SCAN_NAME
+#  datatype: float64
+#  name: tg/slant_column_density_relative_rms
+#  units: '1'
 scd_sim_aer:
   _FillValue: DBL_FILLVAL
   description: simulated slant columns with retrieved profile
@@ -321,7 +341,7 @@ scd_sim_tg:
   units: molec/cm2
 scd_meas_err_tg:
   _FillValue: DBL_FILLVAL
-  description: measured slant column density errors
+  description: simulated slant columns with retrieved profile
   dimensions: !!python/tuple
     - DIM_SCAN_NAME
     - DIM_ANGLE_NAME
@@ -330,30 +350,12 @@ scd_meas_err_tg:
   units: molec/cm2
 scd_meas_err_aer:
   _FillValue: DBL_FILLVAL
-  description: measured slant column density errors
+  description: simulated slant columns with retrieved profile
   dimensions: !!python/tuple
     - DIM_SCAN_NAME
     - DIM_ANGLE_NAME
   datatype: float64
   name: aer/slant_column_density_measured_error
-  units: molec/cm2
-scd_meas_tg:
-  _FillValue: DBL_FILLVAL
-  description: measured slant columns
-  dimensions: !!python/tuple
-    - DIM_SCAN_NAME
-    - DIM_ANGLE_NAME
-  datatype: float64
-  name: tg/slant_column_density_measured
-  units: molec/cm2
-scd_meas_aer:
-  _FillValue: DBL_FILLVAL
-  description: measured slant columns
-  dimensions: !!python/tuple
-    - DIM_SCAN_NAME
-    - DIM_ANGLE_NAME
-  datatype: float64
-  name: aer/slant_column_density_measured
   units: molec/cm2
 sm_err_cov_aer:
   _FillValue: DBL_FILLVAL
@@ -436,85 +438,27 @@ temperature_aer:
   units: K
 vcd_aer:
   _FillValue: DBL_FILLVAL
-  description: o4 vertical column density
+  description: o4 tropospheric vertical column density
   dimensions: !!python/tuple
     - DIM_SCAN_NAME
   datatype: float64
-  name: aer/vertical_column_density
+  name: aer/tropospheric_vertical_column_density
   units: molec/cm5
 vcd_err_tg:
   _FillValue: DBL_FILLVAL
-  description: gas vertical column density error calculated from covariance smoothing
+  description: tropospheric gas vertical column density error calculated from covariance smoothing
     error matrix, covariance measurement noise error matrix and systematic error as
     a fixed fraction of vcd
   dimensions: !!python/tuple
     - DIM_SCAN_NAME
   datatype: float32
-  name: tg/vertical_column_density_error
+  name: tg/tropospheric_vertical_column_density_error
   units: molec/cm2
 vcd_tg:
   _FillValue: DBL_FILLVAL
-  description: gas vertical column density
+  description: tropospheric gas vertical column density
   dimensions: !!python/tuple
     - DIM_SCAN_NAME
   datatype: float32
-  name: tg/vertical_column_density
+  name: tg/tropospheric_vertical_column_density
   units: molec/cm2
-FROM_ORIG:
-  el_ang:
-    _FillValue: DBL_FILLVAL
-    description: telescope elevation angle
-    dimensions: !!python/tuple
-        - DIM_SCAN_NAME
-        - DIM_ANGLE_NAME
-    datatype: float32
-    name: telescope_elevation_angle
-    units: 'degree'
-  SZA:
-    _FillValue: DBL_FILLVAL
-    description: telescope elevation angle
-    dimensions: !!python/tuple
-        - DIM_SCAN_NAME
-    datatype: float32
-    name: solar_zenith_angle
-    units: 'degree'
-  RAA:
-    _FillValue: DBL_FILLVAL
-    description: azimuth angle between sun and telescope
-    dimensions: !!python/tuple
-        - DIM_SCAN_NAME
-    datatype: float32
-    name: relative_azimuth_angle
-    units: 'degree'
-  TAA:
-    _FillValue: DBL_FILLVAL
-    description: telescope azimuth angle
-    dimensions: !!python/tuple
-        - DIM_SCAN_NAME
-    datatype: float32
-    name: telescope_azimuth_angle
-    units: 'degree'
-  doy:
-    _FillValue: DBL_FILLVAL
-    description: fractional day of year (Jan, 1st = 1)
-    dimensions: !!python/tuple
-        - DIM_SCAN_NAME
-    datatype: float32
-    name: fractional_day_of_measurement
-    units: 'day'
-  year:
-    _FillValue: DBL_FILLVAL
-    description: Year of measurement
-    dimensions: !!python/tuple
-        - DIM_SCAN_NAME
-    datatype: float32
-    name: year_of_measurement
-    units: 'year'
-  scan_idx:
-    _FillValue: INT_FILLVAL
-    description: Scan index of measurement
-    dimensions: !!python/tuple
-        - DIM_SCAN_NAME
-    datatype: int32
-    name: scan_index
-    units: '1'

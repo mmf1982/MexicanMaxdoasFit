@@ -37,7 +37,7 @@ FILLVALS:
     "TEST_FILLVAL": -123123.123123
     "LONG_FILLVAL": -2147483647
 
-DEFAULTS:
+SETTINGS:
     "aod_apriori": 0.18
     "aessa": 0.92
     "aeasym": 0.68
