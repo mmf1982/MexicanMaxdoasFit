@@ -1,14 +1,14 @@
 # MexicanMaxdoasFit
 Inversion code for profile retrieval from slant column densities
 
-You need vlidort2.7 to be able to run MexicanMaxdoasFit (MMF). 
+You need vlidort2.7 (check here on how to receive it: http://www.rtslidort.com/mainprod_vlidort.html) to be able to run MexicanMaxdoasFit (MMF). 
 
 ## To compile the fortran core of MMF together with vlidort:
   * put the RETRIEVAL folder inside the vlidort folder with folders fo_main_1p4, util, vlidort_main, vlidort_def, vsup, vlidort_s_test
   * put the files makefile and make_code.py in that same folder.
   * create empty folders mod and obj inside that same folder
+  * adjust some limits in the vlidort_pars.f90 file which is located inside the vlidort_def folder. Limits to change are e.g. MAXLAYERS (change from 26 to something around 100) and MAX_USER_VZANGLES (change to 35).
   * run python3.7 make_code.py from within that folder
-    (you might need to adjust some limits in the vlidort_pars.f90 file, e.g. layer limit or angle limit)
 
 ## To run the retrieval of the included test measurements:
   * create the follwing folder structure (i.e. copy the produced executables inside the main path):
