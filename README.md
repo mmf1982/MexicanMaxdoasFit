@@ -39,25 +39,30 @@ You need vlidort2.7 (check here on how to receive it: http://www.rtslidort.com/m
       AEROSOL_profile_wf.exe
       NO2_profile_wf.exe
       ```
-  * within the main folder, run: python3.7 -m pythoncode.MMFprofiling
+  * within the main folder, run: python3 -m pythoncode.MMFprofiling 
 
 This produces a file netCDF4 test.nc which represents the retrieval of the data supplied here inside TESTDATA/MEAS.yml using the ancilary data (temperature, pressure, aerosol properties, etc.) given in TESTDATA/ANCIL.yml using the settings as specified in TESTDATA/SETTINGS.yml and inside the settings files that are linked inside that file ans also provided here in ancilMMF and configMMF. 
 
-## Description of files
-### mmf_output.yml
-This is a file describing the output variables inside the output file. Variables can be removed. Variables in the group FROM_ORIG need to be present in the original measurement dictionarry. The name inside the outputfile (given under the key "name") can be adapted", as well as the "description"
+Please note that the interface to the example files provided here under TESTDATA is only an example. I chose this to be yml so that the data can be directly looked at as a plain text. I recommend a netCDF interface.
 
-### config.cnf 
+## Description of files
+### configMMF/mmf_output.yml
+This is a file describing the output variables inside the output file, something like a blueprint. Variables can be removed. Variables in the group FROM_ORIG need to be present in the original measurement dictionarry. The name inside the outputfile (given under the key "name") can be adapted", as well as the "description" or "long_name".
+
+### configMMF/config.cnf 
 This file describes output file settings, such as the output grid (not the retrieval grid), fillvalues and default values to use
 
-### mmf_settings.yml
+### configMMF/mmf_settings.yml
 flag limits and names for other settings. Retrieval settings are not set here, only settings for flags and furhter names of files
 
-### setup.txt
-This is the blueprint setup file for the fortran core. The retrieval grid (and simulation grid) are set here. A proper description is yet to come. Retrieval settings are provided here 
+### ancilMMF/station/setup.txt
+This is the blueprint setup file for the fortran core. The retrieval grid (and simulation grid) are set here. A proper description is yet to come. Some comments: Retrieval settings are provided here. For *numer of layers*, the first number is the total number of layers, the second is up to which number the retrieval is performed. *Sa read in?* currently only works for False. 
 
-### aerosol_apriori.txt, apriori_heights.txt, hcho_apriori.txt, no2_apriori.txt
- These are the apriori files to use. Note that the height grid is in meters and starts with the number of layers. The other files also start with the number of layers as the first entry. Further, the heihgt grid is increasing. This grid is internally interpolated on the simulation grid specified in setup.txt. Note further that the aerosol a priori is internally rescaled to the provided aod value.
+### ancilMMF/station/aerosol_apriori.txt, apriori_heights.txt, hcho_apriori.txt, no2_apriori.txt
+ These are the apriori files to use. Note that the height grid is in meters and starts with the number of layers. The other files also start with the number of layers as the first entry. Further, the height grid is increasing. This grid is internally interpolated to the simulation grid specified in setup.txt. Note further that the aerosol a priori is internally rescaled to the provided aod value.
+ 
+### TESTDATA
+These contain examples of how ancillary information such as temperaure, pressure, aerosol properties, surface alebdo etc should be supplied (ANCIL.yml) as well as how the measurements should be supplied (MEAS.yml) and how the file structure etc. could be set up (SETTINGS.yml). The former two are only supplied here as yml files for ease of viewing. The corresponding wrapper for this is the supplied function "test_run" in MMFprofiling.py. The important part here is to pass three dicts and and output file name to mmf_stand_alone.
  
 ## suggested Versions
 I suggest to use the following versions:
