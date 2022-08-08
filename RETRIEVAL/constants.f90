@@ -6,18 +6,18 @@ module constants
 
 implicit none 
 
-double precision, parameter :: pi     = 3.1415926359  ! pi
-double precision, parameter :: C0inK  = 273.15        ! 0 deg C in Kelvin
+real(kind=16), parameter :: pi     = 3.1415926359  ! pi
+real(kind=16), parameter :: C0inK  = 273.15d0         ! 0 deg C in Kelvin
 
 ! the following two parameters are from Ciddor,P.E. (1996)
-double precision, parameter :: Rgas = 8.3144621     ! gas constant in J/mol/K  
-double precision, parameter :: Mmwv = 0.018015      ! molar mass of water vapor in kg/mol 
-double precision, parameter :: Av   = 6.02214129e23 ! avogadro number #/mol
-double precision, parameter :: g0   = 9.80665       ! standart grav acc in m/s²
+real(kind=16), parameter :: Rgas = 8.314462618d0     ! gas constant in J/mol/K  
+real(kind=16), parameter :: Mmwv = 0.018015d0      ! molar mass of water vapor in kg/mol 
+real(kind=16), parameter :: Av   = 6.02214129e23 ! avogadro number #/mol
+real(kind=16), parameter :: g0   = 9.80665       ! standart grav acc in m/s²
 
-double precision, parameter :: m2cm = 100.          ! m in cm
-double precision, parameter :: km2m = 1000.        ! km in m
-double precision, parameter :: ppb  = 1000000000.   ! 1e9
+real(kind=16), parameter :: m2cm = 100.          ! m in cm
+real(kind=16), parameter :: km2m = 1000.        ! km in m
+real(kind=16), parameter :: ppb  = 1000000000.   ! 1e9
 
 
 
@@ -30,9 +30,9 @@ contains
 subroutine cross_secsetup(infile, crossec_table)
 
   character(len=*), intent (in)  :: infile
-  double precision, dimension(:,:), intent (out), allocatable  :: crossec_table
+  real(kind=16), dimension(:,:), intent (out), allocatable  :: crossec_table
   integer :: ii, i2, jj=0
-  double precision :: t1, t2
+  real(kind=16) :: t1, t2
   character(len=200) :: trash
   ! this is solely to determine the length of the table to read in 
   open(1,file=infile,status='old' )

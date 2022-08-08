@@ -13,29 +13,29 @@ module gaussnewton
         Kmat, SCDmeasured, SCD, X_apriori_orig, Sm_inv, Sa_inv, nlayers, &
         nangles,X_orig, scale_fact_plus1)
   !> K is actually reversed, therfore my K is in reality K_trans and vice versa
-  double precision, dimension(:,:),allocatable, intent(in) :: Kmat     !> layers_retr x angles_retr
-  double precision, dimension(:),  allocatable, intent(in) :: SCDmeasured   !> angles x 1
-  double precision, dimension(:),  allocatable, intent(in) :: SCD           !> angles x 1
-  double precision, dimension(:),  allocatable, intent(in) :: X_apriori_orig!> layers x 1
-  double precision, dimension(:),  allocatable, intent(inout) :: X_orig     !> layers x 1
-  double precision, dimension(:,:),allocatable, intent(in) :: Sm_inv         !> angles x angles
-  double precision, dimension(:,:),allocatable, intent(in) :: Sa_inv    !> layers_retr x layers_retr
-  double precision, intent(in) :: scale_fact_plus1
-  double precision, dimension(:), allocatable :: X_apriori
-  double precision, dimension(:), allocatable :: X
+  real(kind=16), dimension(:,:),allocatable, intent(in) :: Kmat     !> layers_retr x angles_retr
+  real(kind=16), dimension(:),  allocatable, intent(in) :: SCDmeasured   !> angles x 1
+  real(kind=16), dimension(:),  allocatable, intent(in) :: SCD           !> angles x 1
+  real(kind=16), dimension(:),  allocatable, intent(in) :: X_apriori_orig!> layers x 1
+  real(kind=16), dimension(:),  allocatable, intent(inout) :: X_orig     !> layers x 1
+  real(kind=16), dimension(:,:),allocatable, intent(in) :: Sm_inv         !> angles x angles
+  real(kind=16), dimension(:,:),allocatable, intent(in) :: Sa_inv    !> layers_retr x layers_retr
+  real(kind=16), intent(in) :: scale_fact_plus1
+  real(kind=16), dimension(:), allocatable :: X_apriori
+  real(kind=16), dimension(:), allocatable :: X
   integer, intent(in) :: nlayers
   integer, intent(in) :: nangles
   integer :: ii,kk,io, nstart, nlayers_orig
   logical :: SaM1_switch=.false.  ! this used to be read in handle_setupfile
   integer :: upperhalf=0  ! this used to be read in handle_setupfile
-  double precision :: upper_p=1.0, lower_p=1.0   ! this used to be read in handle_setupfile
-  double precision, dimension(:,:),  allocatable :: K_trans
-  double precision, dimension(:,:),  allocatable :: Gmat
-  double precision, dimension(:,:),  allocatable :: G_inv
-  double precision, dimension(:),    allocatable :: temp
-  double precision, dimension(:),    allocatable :: temp2
-  double precision, dimension(:,:),    allocatable :: deltazM
-  double precision, dimension(:,:), allocatable :: debug1
+  real(kind=16) :: upper_p=1.0, lower_p=1.0   ! this used to be read in handle_setupfile
+  real(kind=16), dimension(:,:),  allocatable :: K_trans
+  real(kind=16), dimension(:,:),  allocatable :: Gmat
+  real(kind=16), dimension(:,:),  allocatable :: G_inv
+  real(kind=16), dimension(:),    allocatable :: temp
+  real(kind=16), dimension(:),    allocatable :: temp2
+  real(kind=16), dimension(:,:),    allocatable :: deltazM
+  real(kind=16), dimension(:,:), allocatable :: debug1
 
   nlayers_orig = size(X_orig)
   nstart = nlayers_orig - nlayers + 1
@@ -121,28 +121,28 @@ module gaussnewton
  end subroutine inversion
 
 subroutine write_inversion(Kmat, Sm, Sa_o, nlayers, nangles, xx_o, x_apriori_o, nstart, heights)
-  double precision, dimension(:,:),allocatable, intent(inout) :: Kmat     !> layers_retr x angles_retr
-  double precision, dimension(:,:),allocatable, intent(in) :: Sm       !> angles x angles
-  double precision, dimension(:,:),allocatable, intent(in) :: Sa_o     !> layers_retr x layers_retr
-  double precision, dimension(:),allocatable, intent(in) :: xx_o
-  double precision, dimension(:),allocatable, intent(in) :: x_apriori_o
-  double precision, dimension(:),allocatable, intent(in) :: heights !> layer thickness in km
+  real(kind=16), dimension(:,:),allocatable, intent(inout) :: Kmat     !> layers_retr x angles_retr
+  real(kind=16), dimension(:,:),allocatable, intent(in) :: Sm       !> angles x angles
+  real(kind=16), dimension(:,:),allocatable, intent(in) :: Sa_o     !> layers_retr x layers_retr
+  real(kind=16), dimension(:),allocatable, intent(in) :: xx_o
+  real(kind=16), dimension(:),allocatable, intent(in) :: x_apriori_o
+  real(kind=16), dimension(:),allocatable, intent(in) :: heights !> layer thickness in km
   integer, intent(in) :: nlayers
   integer, intent(in) :: nangles
   integer, intent(in) :: nstart
-  double precision, dimension(:),allocatable :: xx
-  double precision, dimension(:),allocatable :: x_apriori
-  double precision, dimension(:,:),allocatable :: Sa
-  double precision, dimension(:,:),allocatable :: errormat  !> layers x layers
-  double precision, dimension(:,:),allocatable :: AvK       !> layers x layers Averaging Kernel
-  double precision, dimension(:,:),allocatable :: GAIN      !> layers x angles ???
-  double precision, dimension(:,:),allocatable :: Gmat
-  double precision, dimension(:,:),allocatable :: G_inv
-  double precision, dimension(:,:),allocatable :: K_trans
-  double precision :: dof                  !> degree of freedom 
+  real(kind=16), dimension(:),allocatable :: xx
+  real(kind=16), dimension(:),allocatable :: x_apriori
+  real(kind=16), dimension(:,:),allocatable :: Sa
+  real(kind=16), dimension(:,:),allocatable :: errormat  !> layers x layers
+  real(kind=16), dimension(:,:),allocatable :: AvK       !> layers x layers Averaging Kernel
+  real(kind=16), dimension(:,:),allocatable :: GAIN      !> layers x angles ???
+  real(kind=16), dimension(:,:),allocatable :: Gmat
+  real(kind=16), dimension(:,:),allocatable :: G_inv
+  real(kind=16), dimension(:,:),allocatable :: K_trans
+  real(kind=16) :: dof                  !> degree of freedom 
   character(len=200) :: convspec2,fmtnangles
-  double precision, dimension(:,:),  allocatable :: Sm_inv
-  double precision, dimension(:,:),  allocatable :: Sa_inv
+  real(kind=16), dimension(:,:),  allocatable :: Sm_inv
+  real(kind=16), dimension(:,:),  allocatable :: Sa_inv
   integer :: ii
 
   write(convspec2,*) NLAYERS !"'(", N_USER_VZANGLES,"(f14.5))'"
@@ -305,11 +305,11 @@ subroutine write_inversion(Kmat, Sm, Sa_o, nlayers, nangles, xx_o, x_apriori_o, 
 
   
   subroutine calccost(Sa_inv,Sm_inv,temp,temp2,cost)
-    double precision, dimension(:,:), allocatable, intent(in) :: Sa_inv
-    double precision, dimension(:,:), allocatable, intent(in) :: Sm_inv
-    double precision, dimension(:), allocatable, intent(in) :: temp
-    double precision, dimension(:), allocatable, intent(in) :: temp2
-    double precision, intent(out):: cost
+    real(kind=16), dimension(:,:), allocatable, intent(in) :: Sa_inv
+    real(kind=16), dimension(:,:), allocatable, intent(in) :: Sm_inv
+    real(kind=16), dimension(:), allocatable, intent(in) :: temp
+    real(kind=16), dimension(:), allocatable, intent(in) :: temp2
+    real(kind=16), intent(out):: cost
     cost = dot_product(temp2,matmul(temp2,Sm_inv)) + dot_product(matmul(Sa_inv,temp),temp)
   end subroutine calccost
 
@@ -330,9 +330,9 @@ subroutine write_inversion(Kmat, Sm, Sa_o, nlayers, nangles, xx_o, x_apriori_o, 
 !===========================================================
 implicit none 
 integer n
-double precision a(n,n), c(n,n), a2(n,n)
-double precision L(n,n), U(n,n), b(n), d(n), x(n)
-double precision coeff
+real(kind=16) a(n,n), c(n,n), a2(n,n)
+real(kind=16) L(n,n), U(n,n), b(n), d(n), x(n)
+real(kind=16) coeff
 integer i, j, k
 
 a = a2   ! MMF July 2017 fix to keep original matrix as it is
@@ -396,7 +396,7 @@ end subroutine inverse
 
 function eye(Nn)
  integer Nn, ii
- double precision, dimension(Nn,Nn):: eye
+ real(kind=16), dimension(Nn,Nn):: eye
  eye = 0.0
    do ii = 1, Nn
       eye (ii, ii) = 1.0

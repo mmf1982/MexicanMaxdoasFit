@@ -56,7 +56,7 @@ endif
 
 # Additional flags for gfortran
 ifeq ($(FC), gfortran)
-	FFLAGS := $(FFLAGS) -I$(MOD_PATH) -J$(MOD_PATH)
+	FFLAGS := $(FFLAGS) -I$(MOD_PATH) -J$(MOD_PATH) -mcmodel=large
 	FFLAGS_DEBUG = -g -Wall -fbounds-check
 	FFLAGS_OPT = -O3
 #	FFLAGS_DEBUG = -g -Wall -fbounds-check -fbacktrace

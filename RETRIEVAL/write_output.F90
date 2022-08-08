@@ -10,9 +10,9 @@ module write_output
 
   subroutine writelog(logfile, SCD, SCDmeasured, SCDerrmeasured, nangle, nlayers, convcrit, counter )
     character(len=*), intent(in):: logfile
-    double precision, dimension(:), allocatable, intent(in):: SCD, SCDmeasured, SCDerrmeasured
+    real(kind=16), dimension(:), allocatable, intent(in):: SCD, SCDmeasured, SCDerrmeasured
     integer, intent(in) :: nangle, nlayers, counter
-    double precision, intent(in) :: convcrit
+    real(kind=16), intent(in) :: convcrit
     open(17,file=logfile,status="unknown",position="append")
     write(17,*) 'error', sum(abs(SCD-SCDmeasured))
     write(17,*) 'relative error', sum(abs(SCD-SCDmeasured)/SCDerrmeasured)/nangle
@@ -24,11 +24,11 @@ module write_output
    ! name was SCD_table.dat
   subroutine writescd(scdfile, usedEA, SCD, SCDmeasured, SCDerrmeasured, skippedrows)
     character(len=*), intent(in):: scdfile
-    double precision, dimension(:), allocatable, intent(in):: SCD, &
+    real(kind=16), dimension(:), allocatable, intent(in):: SCD, &
             SCDmeasured, usedEA, SCDerrmeasured
     integer, dimension(:), allocatable, intent(in) :: skippedrows
     integer :: ii, jj
-    double precision :: temp
+    real(kind=16) :: temp
     open(101,FILE= scdfile, STATUS='UNKNOWN')
     write(101,'(A)', advance="no") "theta/ degree, "
     write(101,'(A)', advance="no") "SCD/ (cm**-2), "
@@ -53,7 +53,7 @@ module write_output
 
   subroutine writetau(taufile, xx)
     character(len=*), intent(in) :: taufile
-    double precision, dimension(:), allocatable, intent(in) :: xx
+    real(kind=16), dimension(:), allocatable, intent(in) :: xx
     open(1,file=taufile)
 #ifdef LOGSPACE
     write(1,*) sum(exp(xx))
@@ -65,7 +65,7 @@ module write_output
 
   subroutine writevcd(vcdfile,xx)
   character(len=*), intent(in) :: vcdfile
-    double precision, dimension(:), allocatable, intent(in) :: xx
+    real(kind=16), dimension(:), allocatable, intent(in) :: xx
     open(1,file=vcdfile)
 #ifdef LOGSPACE
     write(1,*) sum(exp(xx))
@@ -78,7 +78,7 @@ module write_output
   subroutine writevcdo4(vcdfile, xx)
     ! o4 vcd is the same fore lin or log processing
     character(len=*), intent(in) :: vcdfile
-    double precision, dimension(:), allocatable, intent(in) :: xx
+    real(kind=16), dimension(:), allocatable, intent(in) :: xx
     open(1,file= vcdfile)
     write(1,*) sum(xx)
     close(1)
@@ -88,10 +88,10 @@ module write_output
   subroutine writeprofile(profilefile, xx, deltaz, xx_apriori, height_grid, rho, &
         Cq_apriori, middleheights, nlayers, nstart, groundoffset, temp, press)
     character(len=*), intent(in) :: profilefile
-    double precision, dimension(:),allocatable, intent(in) :: xx, deltaz,&
+    real(kind=16), dimension(:),allocatable, intent(in) :: xx, deltaz,&
         xx_apriori, height_grid, rho, Cq_apriori, middleheights, temp, press
     integer, intent(in):: nlayers, nstart
-    double precision, intent(in) :: groundoffset
+    real(kind=16), intent(in) :: groundoffset
     integer :: ii
   ! probably I do not need the height_grid if I use middleheights
     OPEN(102, FILE= profilefile, STATUS='UNKNOWN') !, position="append")
@@ -178,7 +178,7 @@ module write_output
 
  subroutine writedscdini(mfolder, usedela, scd)
  character(len=*), intent(in):: mfolder
- double precision, allocatable, dimension(:), intent(in):: usedela, scd
+ real(kind=16), allocatable, dimension(:), intent(in):: usedela, scd
  integer :: ii
  open(101,FILE= trim(mfolder) //'SCD_ini.dat', STATUS='UNKNOWN')
     write(101,'(a)') "theta/ degree,  scd/ (cm**-2)"

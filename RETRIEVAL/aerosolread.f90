@@ -19,20 +19,20 @@
 module aerosolread
 
 implicit none 
- double precision, dimension(:,:) :: aedata(500,287)
- double precision, dimension(:)   :: height(500), time(287)
+ real(kind=16), dimension(:,:) :: aedata(500,287)
+ real(kind=16), dimension(:)   :: height(500), time(287)
  
 contains
 
 subroutine readaerosol(infilename,actime,hgrid,aerosolprof)
- double precision, dimension(:),allocatable,intent(in) :: hgrid
- double precision, dimension(:),allocatable :: hgrid2
+ real(kind=16), dimension(:),allocatable,intent(in) :: hgrid
+ real(kind=16), dimension(:),allocatable :: hgrid2
  character(len=500), intent(in) :: infilename
- double precision, intent(in)   :: actime
+ real(kind=16), intent(in)   :: actime
  integer                     :: io,ii
- double precision, dimension(:) :: aervec(500)
- double precision, dimension(:),allocatable, intent(out) :: aerosolprof
- double precision :: dummy
+ real(kind=16), dimension(:) :: aervec(500)
+ real(kind=16), dimension(:),allocatable, intent(out) :: aerosolprof
+ real(kind=16) :: dummy
  
  allocate(hgrid2(size(hgrid)))
  
@@ -60,10 +60,10 @@ subroutine findtime(actime,aervec)
  !> to find the time position and to return a correct aerosol vector
  !> which need to be interpolated
 
- double precision, intent(in) :: actime
- double precision, intent(out), dimension(:) ::aervec(500)
+ real(kind=16), intent(in) :: actime
+ real(kind=16), intent(out), dimension(:) ::aervec(500)
  integer :: ipos , iposp1
- double precision :: odpos, resid
+ real(kind=16) :: odpos, resid
  
  ipos  = minloc(abs(time - actime),1)
  iposp1= ipos+1
@@ -78,12 +78,12 @@ subroutine findtime(actime,aervec)
 end subroutine findtime
 
 subroutine interpaerosol(mdata,h1,h2,mdata2)
- double precision, intent(in), dimension(:) :: mdata(500)  !> aerosol profile at specified time at the heights as in h1
- double precision, intent(in), dimension(:) :: h1(500)     !> heights for original aerosol grid
- double precision, intent(in),  dimension(:),allocatable :: h2 !> new height grid at which data is needed.
- double precision, intent(out), dimension(:),allocatable :: mdata2
+ real(kind=16), intent(in), dimension(:) :: mdata(500)  !> aerosol profile at specified time at the heights as in h1
+ real(kind=16), intent(in), dimension(:) :: h1(500)     !> heights for original aerosol grid
+ real(kind=16), intent(in),  dimension(:),allocatable :: h2 !> new height grid at which data is needed.
+ real(kind=16), intent(out), dimension(:),allocatable :: mdata2
  integer :: ii, ipos,iposp1
- double precision :: resid, odpos
+ real(kind=16) :: resid, odpos
  
  allocate(mdata2(size(h2)))
  do ii=1,size(h2)

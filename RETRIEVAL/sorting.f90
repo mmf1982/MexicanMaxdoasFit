@@ -17,9 +17,9 @@ CONTAINS
 
   INTEGER FUNCTION  FindMinimum(x, Start, myend)
     IMPLICIT  NONE
-    double precision, DIMENSION(1:), INTENT(IN) :: x
+    real(kind=16), DIMENSION(1:), INTENT(IN) :: x
     INTEGER, INTENT(IN)                :: start, myend
-    double precision                   :: Minimum
+    real(kind=16)                   :: Minimum
     INTEGER                            :: Location
     INTEGER                            :: i
 
@@ -41,8 +41,8 @@ CONTAINS
 
   SUBROUTINE  Swap(a, b)
     IMPLICIT  NONE
-    double precision, INTENT(INOUT) :: a, b
-    double precision                :: temp
+    real(kind=16), INTENT(INOUT) :: a, b
+    real(kind=16)                :: temp
     temp = a
     a    = b
     b    = temp
@@ -56,9 +56,9 @@ CONTAINS
 
    SUBROUTINE  Sort(x, y, z, mysize)
       IMPLICIT  NONE
-      double precision, dimension(:), INTENT(inout) :: x    ! sort after
-      double precision, dimension(:), intent(inout) :: y ! gets sorted
-      double precision, dimension(:), intent(inout) :: z
+      real(kind=16), dimension(:), INTENT(inout) :: x    ! sort after
+      real(kind=16), dimension(:), intent(inout) :: y ! gets sorted
+      real(kind=16), dimension(:), intent(inout) :: z
       INTEGER, INTENT(IN)                   :: mysize
       INTEGER                               :: i
       INTEGER                               :: Location
@@ -73,8 +73,8 @@ CONTAINS
 
    SUBROUTINE Sortmat(x, ymat, mysize)
     IMPLICIT None
-    double precision, dimension(:), intent(inout)   :: x
-    double precision, dimension(:,:), intent(inout) :: ymat
+    real(kind=16), dimension(:), intent(inout)   :: x
+    real(kind=16), dimension(:,:), intent(inout) :: ymat
     integer, intent(in) :: mysize
     integer :: ii, jj, location
     Do ii = 1, mysize

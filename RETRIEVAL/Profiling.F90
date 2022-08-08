@@ -39,56 +39,56 @@ program profiling
     use write_output,        only: writescd, writeprofile, writetau, writevcd
     implicit none
     ! variables for setting up vlidort
-    double precision,dimension(:,:,:),allocatable :: greekmat_total_input
-    double precision :: l_omega_total_input (max_atmoswfs, maxlayers) = 0.0
-    double precision :: l_deltau_vert_input (max_atmoswfs, maxlayers) = 0.0
-    double precision :: l_greekmat_total_input(&
+    real(kind=16),dimension(:,:,:),allocatable :: greekmat_total_input
+    real(kind=16) :: l_omega_total_input (max_atmoswfs, maxlayers) = 0.0
+    real(kind=16) :: l_deltau_vert_input (max_atmoswfs, maxlayers) = 0.0
+    real(kind=16) :: l_greekmat_total_input(&
         max_atmoswfs, 0:maxmoments_input, maxlayers, maxstokes_sq) = 0.0
     integer          :: layer_vary_number(maxlayers)
-    double precision :: omega_total_input(maxlayers) = 0.0
+    real(kind=16) :: omega_total_input(maxlayers) = 0.0
     logical          :: layer_vary_flag( maxlayers )
     logical :: openfileflag
     integer :: isgood = 2
     type(vlidort_modified_inputs)          :: vlidort_modin
     type(vlidort_outputs)                  :: vlidort_out
     type(vlidort_linoutputs)               :: vlidort_linout
-    double precision,dimension(:), allocatable    :: deltau_vert_input
+    real(kind=16),dimension(:), allocatable    :: deltau_vert_input
     ! measurement variables
-    double precision,allocatable,dimension(:)   :: SCDerrmeasured
-    double precision,allocatable,dimension(:)   :: SCDmeasured
-    double precision,allocatable,dimension(:)   :: elevangle
-    double precision,allocatable,dimension(:)   :: szangle
-    double precision,allocatable,dimension(:)   :: rel_azimang
+    real(kind=16),allocatable,dimension(:)   :: SCDerrmeasured
+    real(kind=16),allocatable,dimension(:)   :: SCDmeasured
+    real(kind=16),allocatable,dimension(:)   :: elevangle
+    real(kind=16),allocatable,dimension(:)   :: szangle
+    real(kind=16),allocatable,dimension(:)   :: rel_azimang
     integer, allocatable, dimension(:) :: skippedrows
     !variables for the inversion step
-    double precision :: I90 = 0.0, I090 = 0.0
-    double precision,allocatable,dimension(:)     :: K90
-    double precision,allocatable,dimension(:)     :: K090
-    double precision,allocatable,dimension(:)     :: I0alpha
-    double precision,allocatable,dimension(:)     :: Ialpha
-    double precision,allocatable,dimension(:,:)   :: Kalpha
-    double precision,allocatable,dimension(:,:)   :: K0alpha
-    double precision, allocatable, dimension(:,:) :: Sa
-    double precision,allocatable,dimension(:,:)   :: KS, Sm, KS_previous
-    double precision, allocatable, dimension(:,:) :: Sa_inv
-    double precision, allocatable, dimension(:,:) :: Sm_inv
-    double precision, allocatable, dimension(:)   :: middleheights, deltaz
-    double precision,dimension(:), allocatable    :: xx, xxold, xx_interm, temp
-    double precision,dimension(:), allocatable    :: xx_apriori, dbetadC, beta
-    double precision,dimension(:), allocatable    :: temp2
-    double precision,dimension(:), allocatable    :: SCD, SCD_previous, SCD_old
-    double precision,allocatable,dimension(:)     :: abs_coef, abs_coef2
-    double precision,allocatable,dimension(:)     :: Cq, Cq_apriori
-    double precision, allocatable, dimension(:)   :: interm
-    double precision :: omega
-    double precision :: costfuncfrac
-    double precision :: h1, h2, fact
-    double precision :: tau, temps, temps2
-    double precision :: dtaudC
-    double precision :: domegadC
-    double precision :: scale_fact_plus1
-    double precision :: convcrit, convfrac, cost = 0.0, cost_old = 1.e12
-    double precision :: start, finish, convcrit_scd
+    real(kind=16) :: I90 = 0.0, I090 = 0.0
+    real(kind=16),allocatable,dimension(:)     :: K90
+    real(kind=16),allocatable,dimension(:)     :: K090
+    real(kind=16),allocatable,dimension(:)     :: I0alpha
+    real(kind=16),allocatable,dimension(:)     :: Ialpha
+    real(kind=16),allocatable,dimension(:,:)   :: Kalpha
+    real(kind=16),allocatable,dimension(:,:)   :: K0alpha
+    real(kind=16), allocatable, dimension(:,:) :: Sa
+    real(kind=16),allocatable,dimension(:,:)   :: KS, Sm, KS_previous
+    real(kind=16), allocatable, dimension(:,:) :: Sa_inv
+    real(kind=16), allocatable, dimension(:,:) :: Sm_inv
+    real(kind=16), allocatable, dimension(:)   :: middleheights, deltaz
+    real(kind=16),dimension(:), allocatable    :: xx, xxold, xx_interm, temp
+    real(kind=16),dimension(:), allocatable    :: xx_apriori, dbetadC, beta
+    real(kind=16),dimension(:), allocatable    :: temp2
+    real(kind=16),dimension(:), allocatable    :: SCD, SCD_previous, SCD_old
+    real(kind=16),allocatable,dimension(:)     :: abs_coef, abs_coef2
+    real(kind=16),allocatable,dimension(:)     :: Cq, Cq_apriori
+    real(kind=16), allocatable, dimension(:)   :: interm
+    real(kind=16) :: omega
+    real(kind=16) :: costfuncfrac
+    real(kind=16) :: h1, h2, fact
+    real(kind=16) :: tau, temps, temps2
+    real(kind=16) :: dtaudC
+    real(kind=16) :: domegadC
+    real(kind=16) :: scale_fact_plus1
+    real(kind=16) :: convcrit, convfrac, cost = 0.0, cost_old = 1.e12
+    real(kind=16) :: start, finish, convcrit_scd
     integer :: num_args, ix, ngr_moms=80, ii, nangle, jj, maxcounter=25
     integer :: n_user_vzangles, nstart
     character(len=500), dimension(:), allocatable :: args
@@ -100,7 +100,7 @@ program profiling
     logical :: switch = .true.
     integer :: counter = 0
     character(len=3) :: scannumber
-    double precision:: version_number = 1.0
+    real(kind=16):: version_number = 1.0
 #ifdef TG
     convfrac = 0.015
     costfuncfrac = 1.0001

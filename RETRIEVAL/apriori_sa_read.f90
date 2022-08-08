@@ -18,12 +18,12 @@ module apriori_sa_read
   subroutine read_apriori(apriori_file, height_file, profile, hgrid)
     character(len=*), intent(in) :: apriori_file
     character(len=*), intent(in) :: height_file
-    double precision, dimension(:), allocatable, intent(inout) :: profile
-    double precision, dimension(:), allocatable, intent(in) :: hgrid  ! in km
-    double precision, dimension(:), allocatable :: hgrid_external  ! in m
-    double precision, dimension(:), allocatable :: profile_external
+    real(kind=16), dimension(:), allocatable, intent(inout) :: profile
+    real(kind=16), dimension(:), allocatable, intent(in) :: hgrid  ! in km
+    real(kind=16), dimension(:), allocatable :: hgrid_external  ! in m
+    real(kind=16), dimension(:), allocatable :: profile_external
     integer :: rows, io, rows2, sizehgrid, ipos, iposp1, ii
-    double precision :: hipos, resid, pipos, piposp1, hiposp1
+    real(kind=16) :: hipos, resid, pipos, piposp1, hiposp1
 
     sizehgrid=size(hgrid)
     open(1,file= trim(apriori_file), action='read',status='old',iostat=io)
@@ -98,13 +98,13 @@ module apriori_sa_read
   subroutine read_sa(Sa_file, height_file, Sa, hgrid)
     character(len=500), intent(in) :: Sa_file
     character(len=500), intent(in) :: height_file
-    double precision, dimension(:,:), allocatable, intent(inout) :: Sa
-    double precision, dimension(:), intent(in) :: hgrid  ! in km
-    double precision, dimension(:), allocatable :: hgrid_external  ! in m
-    double precision, dimension(:,:), allocatable :: Sa_external
+    real(kind=16), dimension(:,:), allocatable, intent(inout) :: Sa
+    real(kind=16), dimension(:), intent(in) :: hgrid  ! in km
+    real(kind=16), dimension(:), allocatable :: hgrid_external  ! in m
+    real(kind=16), dimension(:,:), allocatable :: Sa_external
     integer :: rows, io, rows2, sizehgrid, ipos, iposp1, ipos2, iposp1_2, ii, jj
-    double precision :: hipos, resid, pipos, piposp1, hipos2, resid2, temp1, temp2
-    double precision :: pipos11, pipos12, pipos21, pipos22, hiposp1_2, hiposp1
+    real(kind=16) :: hipos, resid, pipos, piposp1, hipos2, resid2, temp1, temp2
+    real(kind=16) :: pipos11, pipos12, pipos21, pipos22, hiposp1_2, hiposp1
     sizehgrid=size(hgrid)
 
     open(1,file= Sa_file, action='read',status='old',iostat=io)

@@ -14,15 +14,15 @@ module writeinput
  implicit none
 
  integer :: dataset(0:300)
- double precision, dimension(:,:), allocatable :: dscd, dscderr
- double precision, dimension(:)  , allocatable :: szangle, elevangle, date, &
+ real(kind=16), dimension(:,:), allocatable :: dscd, dscderr
+ real(kind=16), dimension(:)  , allocatable :: szangle, elevangle, date, &
                                               time, solazim, telazim,rel_azimang
  
  contains
  
  subroutine readwritefile(filename,trace_gas,SCD,usedEA)
-  double precision, allocatable, dimension(:)           :: usedEA
- double precision,allocatable,dimension(:),intent(in)   :: SCD
+  real(kind=16), allocatable, dimension(:)           :: usedEA
+ real(kind=16),allocatable,dimension(:),intent(in)   :: SCD
  CHARACTER(len=*), intent(in)                           :: filename 
  CHARACTER(len=650)                                     :: firstline, otherlines
  integer                                                :: io, ii, columns, jj,kk,ll,mm(1:10), rows
@@ -35,8 +35,8 @@ module writeinput
  integer                                                :: szangleidx=0,elevangleidx=0,dateidx=0,timeidx=0, &
         specnumidx=0,solazimidx=0,telazimidx=0,datetimeidx=0,dscdidx(10)=0, &
         dscderridx(10)=0, scannumidx=0
- double precision                                       :: test
- double precision                                       :: errorfrac=0.1 !> what fraction of dscd should be written as measurement error
+ real(kind=16)                                       :: test
+ real(kind=16)                                       :: errorfrac=0.1 !> what fraction of dscd should be written as measurement error
  character(len=200)                                     :: newfilename
  newfilename ="_new"
  newfilename = trim(filename)//newfilename

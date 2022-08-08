@@ -26,15 +26,15 @@ module initialize
  TYPE(VLIDORT_Modified_LinInputs)       :: VLIDORT_LinModIn
  TYPE(VLIDORT_Modified_Inputs)          :: VLIDORT_ModIn
 
- double precision,dimension(:)  , allocatable   :: scatt_coef !> gas scattering coefficient
- double precision,dimension(:,:),allocatable    :: gas_beta   !> gas phase function moments
- double precision,dimension(:)  , allocatable   :: rho        !> total density in 1/m³
- double precision,dimension(:),allocatable :: Ppgrid !> pressure in Pa
- double precision,dimension(:),allocatable :: Ttgrid !> temperature in K
- double precision,dimension(:)  , allocatable   :: abs_aer    !> aerosol absorption coefficient
- double precision,dimension(:)  , allocatable   :: scatt_aer  !> aerosol scattering coefficient
- double precision,dimension(:,:),allocatable    :: aer_beta   !> aerosol phase function moments
- double precision :: cross_sec       !> molecular cross section in cm²
+ real(kind=16),dimension(:)  , allocatable   :: scatt_coef !> gas scattering coefficient
+ real(kind=16),dimension(:,:),allocatable    :: gas_beta   !> gas phase function moments
+ real(kind=16),dimension(:)  , allocatable   :: rho        !> total density in 1/m³
+ real(kind=16),dimension(:),allocatable :: Ppgrid !> pressure in Pa
+ real(kind=16),dimension(:),allocatable :: Ttgrid !> temperature in K
+ real(kind=16),dimension(:)  , allocatable   :: abs_aer    !> aerosol absorption coefficient
+ real(kind=16),dimension(:)  , allocatable   :: scatt_aer  !> aerosol scattering coefficient
+ real(kind=16),dimension(:,:),allocatable    :: aer_beta   !> aerosol phase function moments
+ real(kind=16) :: cross_sec       !> molecular cross section in cm²
 
  contains
 
@@ -49,14 +49,14 @@ subroutine initialize_gas(tpfile, height)
 
   implicit none
   character(len=500), intent(in) :: tpfile
-  double precision, dimension(:), allocatable, intent(in):: height ! this is above surface
-  !double precision,dimension(:),allocatable :: Ppgrid !> pressure in Pa
-  !double precision,dimension(:),allocatable :: Ttgrid !> temperature in K
-  double precision,dimension(:),allocatable :: nn     !> refractive index
-  double precision :: rayscatt                        !> rayleigh scattering cross section
-  double precision :: Delta                           !> depolarization ratio of air
+  real(kind=16), dimension(:), allocatable, intent(in):: height ! this is above surface
+  !real(kind=16),dimension(:),allocatable :: Ppgrid !> pressure in Pa
+  !real(kind=16),dimension(:),allocatable :: Ttgrid !> temperature in K
+  real(kind=16),dimension(:),allocatable :: nn     !> refractive index
+  real(kind=16) :: rayscatt                        !> rayleigh scattering cross section
+  real(kind=16):: Delta                           !> depolarization ratio of air
   integer :: ii
-  double precision, dimension(:,:),allocatable  :: cross_sectable!> to read in
+  real(kind=16), dimension(:,:),allocatable  :: cross_sectable!> to read in
 
   allocate (Ttgrid(nlayers))
   allocate (Ppgrid(nlayers))
@@ -67,7 +67,7 @@ subroutine initialize_gas(tpfile, height)
 
   call cross_secsetup(crosssecfile, cross_sectable) ! load the molecule cross section table
   call calc_Delta(lambda,Delta)                     ! calculate depolarizaion factor of air
-  Ttgrid = 0.0
+  Ttgrid = 0.0d0
   ! the height passed to temppress2 should be the height above m.s.l. and hence +groundoffset
   call temppress2(tpfile, groundoffset, height, Ttgrid, Ppgrid)
   Ttgrid = Ttgrid + C0inK         ! Tt in Kelvin
@@ -109,12 +109,12 @@ subroutine initialize_aerosol(aerprofshape,taer,waer,gaer,ngreek_moments_input, 
     use constants, only: m2cm, km2m
     use handle_setupfile, only: nlayers
     implicit none
-    double precision, intent(in) :: taer, gaer, waer
+    real(kind=16), intent(in) :: taer, gaer, waer
     integer, intent(in) :: ngreek_moments_input
-    double precision, dimension(:), allocatable, intent(in):: aerprofshape
-    double precision, dimension(:), allocatable, intent(in):: deltaz
+    real(kind=16), dimension(:), allocatable, intent(in):: aerprofshape
+    real(kind=16), dimension(:), allocatable, intent(in):: deltaz
     integer :: ii
-    double precision :: parcel
+    real(kind=16) :: parcel
     allocate (aer_beta(0:ngreek_moments_input,nlayers))
     allocate (abs_aer(nlayers))
     allocate (scatt_aer(nlayers))

@@ -18,12 +18,12 @@ implicit none
 
 subroutine calcscd(I1,I2,I3,I4,crossec,SCD)
 
-  double precision, intent (in),dimension(:),allocatable  :: I1  !> I_0(alpha)
-  double precision, intent (in)  :: I2  !> I  (90)
-  double precision, intent (in),dimension(:),allocatable  :: I3  !> I  (alpha)
-  double precision, intent (in)  :: I4  !> I_0(90)
-  double precision, intent (in)  :: crossec !> what is the unit here? /cm² I think. 
-  double precision, intent (inout),dimension(:),allocatable :: SCD !> only I/O for allocate reason
+  real(kind=16), intent (in),dimension(:),allocatable  :: I1  !> I_0(alpha)
+  real(kind=16), intent (in)  :: I2  !> I  (90)
+  real(kind=16), intent (in),dimension(:),allocatable  :: I3  !> I  (alpha)
+  real(kind=16), intent (in)  :: I4  !> I_0(90)
+  real(kind=16), intent (in)  :: crossec !> what is the unit here? /cm² I think. 
+  real(kind=16), intent (inout),dimension(:),allocatable :: SCD !> only I/O for allocate reason
 
   SCD = log(I1*I2/(I3*I4))/crossec
 
@@ -32,16 +32,16 @@ end subroutine calcscd
 
 subroutine calckernel(I1,I2,I3,I4,K1,K2,K3,K4,crossec,KS, nstart)
 
-  double precision, intent (in),   dimension(:),allocatable  :: I1
-  double precision, intent (in)                              :: I2
-  double precision, intent (in),   dimension(:),allocatable  :: I3
-  double precision, intent (in)                              :: I4
-  double precision, intent (in),   dimension(:,:),allocatable:: K1
-  double precision, intent (in),   dimension(:),allocatable  :: K2
-  double precision, intent (in),   dimension(:,:),allocatable:: K3
-  double precision, intent (in),   dimension(:),allocatable  :: K4
-  double precision, intent (inout),dimension(:,:),allocatable:: KS
-  double precision, intent (in)  :: crossec
+  real(kind=16), intent (in),   dimension(:),allocatable  :: I1
+  real(kind=16), intent (in)                              :: I2
+  real(kind=16), intent (in),   dimension(:),allocatable  :: I3
+  real(kind=16), intent (in)                              :: I4
+  real(kind=16), intent (in),   dimension(:,:),allocatable:: K1
+  real(kind=16), intent (in),   dimension(:),allocatable  :: K2
+  real(kind=16), intent (in),   dimension(:,:),allocatable:: K3
+  real(kind=16), intent (in),   dimension(:),allocatable  :: K4
+  real(kind=16), intent (inout),dimension(:,:),allocatable:: KS
+  real(kind=16), intent (in)  :: crossec
   integer, intent(in) :: nstart
   integer :: layernumber,ii,anglenumber, jj, idx
 

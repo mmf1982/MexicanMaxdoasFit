@@ -13,14 +13,14 @@ module readinput
 
     integer :: io
     character(len=*), intent(in) :: filename
-    double precision, dimension(:,:), allocatable:: datamatrix
-    double precision, dimension(:,:), allocatable:: datamatrix_internal
+    real(kind=16), dimension(:,:), allocatable:: datamatrix
+    real(kind=16), dimension(:,:), allocatable:: datamatrix_internal
     integer, dimension(:),allocatable,  intent(out):: skippedrows
-    double precision, dimension(:), allocatable, intent(out) :: dscd
-    double precision, dimension(:), allocatable, intent(out) :: dscderr
-    double precision, dimension(:), allocatable, intent(out) :: elevangle
-    double precision, dimension(:), allocatable, intent(out) :: raa
-    double precision, dimension(:), allocatable, intent(out) :: szangle
+    real(kind=16), dimension(:), allocatable, intent(out) :: dscd
+    real(kind=16), dimension(:), allocatable, intent(out) :: dscderr
+    real(kind=16), dimension(:), allocatable, intent(out) :: elevangle
+    real(kind=16), dimension(:), allocatable, intent(out) :: raa
+    real(kind=16), dimension(:), allocatable, intent(out) :: szangle
     integer, intent(out) :: rows
     integer :: rows_internal, ii
     character(len=*), intent(in) :: sn

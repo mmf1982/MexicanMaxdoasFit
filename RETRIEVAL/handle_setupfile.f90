@@ -21,19 +21,19 @@ implicit none
   character (len=500) :: crosssecfile
   character(len=500) :: vlidort_config
   logical             :: do_read_Sa
-  double precision    :: lambda                 ! wavelength in nm
+  real(kind=16)     :: lambda                 ! wavelength in nm
   integer             :: nlayers                ! number of layers for simulation
   integer             :: nlayers_retrieve       ! number of layers for retrieval
   character (len=10)  :: S1
-  double precision    :: groundoffset           ! altitude in km 
-  double precision    :: l_albedo               ! surface albedo
-  double precision    :: Saparam1               ! parameters for Sa matrix, scaling!
-  double precision    :: scaleheight            ! scaleheight for off-diag elements of Sa in km 
-  double precision, dimension(:), allocatable :: height_grid ! height grid in km 
-  double precision, dimension(:), allocatable :: hh          ! fractional humidity
-  double precision, dimension(:), allocatable :: xCO2        ! VMR of CO2 in ppm
-  double precision, dimension(:), allocatable :: aerprofshape ! aerosol profile shape
-  double precision :: taer, gaer, waer, real0 ! aerosol ext, unisotropy, omega, zenith
+  real(kind=16)    :: groundoffset           ! altitude in km 
+  real(kind=16)    :: l_albedo               ! surface albedo
+  real(kind=16)    :: Saparam1               ! parameters for Sa matrix, scaling!
+  real(kind=16)    :: scaleheight            ! scaleheight for off-diag elements of Sa in km 
+  real(kind=16), dimension(:), allocatable :: height_grid ! height grid in km 
+  real(kind=16), dimension(:), allocatable :: hh          ! fractional humidity
+  real(kind=16), dimension(:), allocatable :: xCO2        ! VMR of CO2 in ppm
+  real(kind=16), dimension(:), allocatable :: aerprofshape ! aerosol profile shape
+  real(kind=16) :: taer, gaer, waer, real0 ! aerosol ext, unisotropy, omega, zenith
   character (len=200) ::  SaM1file
 
 contains

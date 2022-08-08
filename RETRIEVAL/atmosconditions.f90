@@ -14,15 +14,14 @@ use sorting, only:  Sort
 
 implicit none
 
-  !double precision, allocatable, dimension(:) :: pressure1, temperature1, height1
 
-  double precision, dimension(8) :: heightlow= dble((/  0.0,11.0,20.0,32.0,&
+  real(kind=16), dimension(8) :: heightlow= dble((/  0.0,11.0,20.0,32.0,&
                                                         47.0,51.0,71.0,84.852/))
-  double precision, dimension(8) :: Templow  = dble((/ 15.0,-56.5,-56.5,&
+  real(kind=16), dimension(8) :: Templow  = dble((/ 15.0,-56.5,-56.5,&
                                                       -44.5,-2.5,-2.5,-58.5,-86.28/))
-  double precision, dimension(8) :: Tslope   = dble((/ -6.5,0.0,1.0,2.8,0.0,&
+  real(kind=16), dimension(8) :: Tslope   = dble((/ -6.5,0.0,1.0,2.8,0.0,&
                                                        -2.8,-2.0,0.0/))
-  double precision, dimension(8) :: Presslow = dble((/101325.0,22632.0,&
+  real(kind=16), dimension(8) :: Presslow = dble((/101325.0,22632.0,&
                                                       5474.89,868.02,110.91,66.94,3.96,0.3734/))
 
   
@@ -38,14 +37,14 @@ implicit none
 !> out: pressure (scalar) in Pa, temperature (scalar) in C
 !
 
-    double precision, dimension(:), allocatable, intent (out) :: temperature !> in C
-    double precision, dimension(:), allocatable, intent (out) :: pressure !> in Pa 
-    double precision, dimension(:), allocatable, intent (in)  :: height  !> in km
-    double precision, dimension(:), allocatable :: hinm
-    double precision               :: odpos, resid
+    real(kind=16), dimension(:), allocatable, intent (out) :: temperature !> in C
+    real(kind=16), dimension(:), allocatable, intent (out) :: pressure !> in Pa 
+    real(kind=16), dimension(:), allocatable, intent (in)  :: height  !> in km
+    real(kind=16), dimension(:), allocatable :: hinm
+    real(kind=16)               :: odpos, resid
     integer                        :: ipos, ii
-    double precision               :: hlowinm, TlowinK,slopinm
-    double precision               :: M = 0.0289644 ! molar mass of earth's air 
+    real(kind=16)               :: hlowinm, TlowinK,slopinm
+    real(kind=16)               :: M = 0.0289644 ! molar mass of earth's air 
     !in kg/ mol as function of xCO2, see optpropin, calc_ref_index_air
 
     allocate(hinm(size(height)))
@@ -79,11 +78,11 @@ implicit none
   character (len=*), intent(in) :: inputfile
   character (len=200) :: firstline
   integer :: ii=0, jj=1, io=0, kk=0, columns !jj=2 accounts for 1 line of header ii was 2
-  double precision :: testheight
-  double precision, intent(in) :: stationheight
-  double precision, allocatable, dimension(:), intent(out) :: pressure1  ! in hPa
-  double precision, allocatable, dimension(:), intent(out) :: temperature1  ! in C
-  double precision, allocatable, dimension(:), intent(out) :: height1  ! in km now
+  real(kind=16) :: testheight
+  real(kind=16), intent(in) :: stationheight
+  real(kind=16), allocatable, dimension(:), intent(out) :: pressure1  ! in hPa
+  real(kind=16), allocatable, dimension(:), intent(out) :: temperature1  ! in C
+  real(kind=16), allocatable, dimension(:), intent(out) :: height1  ! in km now
   character (len=70) :: margs(12)
   open(1,file=inputfile,status='old',iostat=io)
   if(io.ne.0) then
@@ -121,13 +120,13 @@ implicit none
 
   subroutine temppress2(tpfile, stationheight, height2, temperature2, pressure2) ! km, C, Pa
   character(len=500), intent(in) :: tpfile
-  double precision, allocatable, dimension(:), intent(out) :: pressure2, temperature2
-  double precision, allocatable, dimension(:), intent(in) :: height2  ! height above ground
-  double precision, intent(in) :: stationheight
-  double precision, allocatable, dimension(:) :: pressure1,temperature1, height1  ! this height is a.s.l
+  real(kind=16),allocatable, dimension(:), intent(out) :: temperature2, pressure2
+  real(kind=16), allocatable, dimension(:), intent(in) :: height2  ! height above ground
+  real(kind=16), intent(in) :: stationheight
+  real(kind=16), allocatable, dimension(:) :: pressure1,temperature1, height1  ! this height is a.s.l
   integer :: mydim,ipos,iposp1, ii,mysize,ip
-  double precision :: odpos,resid
-  double precision, allocatable, dimension(:) :: h2_1,h2_2,p2_1,p2_2,t2_1,t2_2
+  real(kind=16) :: odpos,resid
+  real(kind=16), allocatable, dimension(:) :: h2_1,h2_2,p2_1,p2_2,t2_1,t2_2
   call readtemppress(stationheight, tpfile, height1,temperature1,pressure1) ! km, C, hPa
   pressure1 = pressure1*dble(100.0) ! Need to convert P in hPA to PA
   height1 = height1 - stationheight ! Need to remove groudoffset
@@ -166,14 +165,14 @@ implicit none
      ip = 0
   !endif
   ! Here comes the interpolation for the temperature2 and pressure2 on the height2 grid
-  do ii = 1,mysize
+do ii = 1,mysize
       ipos = minloc(abs(height1(:)-h2_1(ii)),1)
       odpos  = height1(ipos)
       resid  = h2_1(ii) - odpos
-      if (resid .gt. 0.0) then
+      if ((resid .gt. 0.0) .and. (ipos .lt. size(height1))) then
         iposp1 = ipos +1
         resid = resid / (height1(iposp1)-height1(ipos))
-      elseif (resid .lt. 0.0) then
+      elseif ((resid .lt. 0.0) .and. (ipos .gt. 1)) then
         iposp1 = ipos
         ipos   = ipos - 1
         resid  = (height1(iposp1)-height1(ipos))+resid
@@ -182,9 +181,9 @@ implicit none
         iposp1 = ipos
         resid = 0
       endif
-      p2_1(ii) = pressure1(ipos)+(pressure1(iposp1)-pressure1(ipos))*resid
+      p2_1(ii) = 10**(log10(pressure1(ipos)) + (log10(pressure1(iposp1))-log10(pressure1(ipos)))*(resid))
       t2_1(ii) = temperature1(ipos)+(temperature1(iposp1)-temperature1(ipos))*resid
-  enddo
+enddo
   temperature2(ip+1:) = t2_1
   pressure2(ip+1:) = p2_1
   end subroutine temppress2

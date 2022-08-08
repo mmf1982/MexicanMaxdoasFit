@@ -22,6 +22,8 @@ module optpropin
 use constants
 
 implicit none
+real(kind=16) :: one=1.0, two=2.0, three=3.0, six=6.0, seven=7.0
+real(kind=16) :: zero=0.0
 
  contains
 
@@ -31,10 +33,10 @@ subroutine calc_cross(lambda, cross_sectab,cross_sec)
   !> for the moment, the temperature dependence is not implemented
   !> so the only thing that is done is linear interpolating from the table
 
-  double precision, intent (in), allocatable,dimension(:,:)  :: cross_sectab
-  double precision, intent (in)  :: lambda     !> wavelength in nm
-  double precision, intent (out) :: cross_sec  !> cross section in cm²
-  double precision  :: odpos, resid
+  real(kind=16), intent (in), allocatable,dimension(:,:)  :: cross_sectab
+  real(kind=16), intent (in)  :: lambda     !> wavelength in nm
+  real(kind=16), intent (out) :: cross_sec  !> cross section in cm²
+  real(kind=16)  :: odpos, resid
   integer           :: ipos,iposp1
 
   ipos = minloc(abs(cross_sectab(:,1)-lambda),1)
@@ -64,11 +66,11 @@ end subroutine calc_cross
 
 subroutine calc_gasabs_coef(rho,Cq,crosssec,abs_coef)
   !> implements (2)
-  double precision, intent (in)  :: rho        !> gas density in layer in /m³
-  double precision, intent (in)  :: Cq         !> volume mixing ratio of gas in ppb
-  double precision, intent (in)  :: crosssec   !> cross section in cm²
-  double precision, intent (out) :: abs_coef   !> gas absorption coefficient /cm
-  double precision               :: rhoincmp3  !> rho in /cm³
+  real(kind=16), intent (in)  :: rho        !> gas density in layer in /m³
+  real(kind=16), intent (in)  :: Cq         !> volume mixing ratio of gas in ppb
+  real(kind=16), intent (in)  :: crosssec   !> cross section in cm²
+  real(kind=16), intent (out) :: abs_coef   !> gas absorption coefficient /cm
+  real(kind=16)               :: rhoincmp3  !> rho in /cm³
 #ifdef TG
   rhoincmp3 = rho/dble(1000000.0)
   abs_coef = crosssec * rhoincmp3 * Cq/dble(1000000000.0)
@@ -83,10 +85,10 @@ end subroutine calc_gasabs_coef
 
 subroutine calc_gasscat_coef(rho,QRay,scatt_coef)
   !> implements (4)
-  double precision, intent (in)  :: rho         !> gas density in layer in /m³
-  double precision, intent (in)  :: QRay        !> Rayleigh cross section in cm²
-  double precision, intent (out) :: scatt_coef  !> gas scattering coefficient
-  double precision               :: rhoincmp3   !> rho in /cm³
+  real(kind=16), intent (in)  :: rho         !> gas density in layer in /m³
+  real(kind=16), intent (in)  :: QRay        !> Rayleigh cross section in cm²
+  real(kind=16), intent (out) :: scatt_coef  !> gas scattering coefficient
+  real(kind=16)               :: rhoincmp3   !> rho in /cm³
   rhoincmp3 = rho/dble(1000000.0)
   scatt_coef = Qray * rhoincmp3
 end subroutine calc_gasscat_coef
@@ -102,83 +104,83 @@ subroutine calc_ref_index_air(lambda,Tt,Pp,hh,xCO2,nn,rho)
   !> number density of molecules of dry air
   !> the densities are in kg/m³
   !> implements (0)
-  double precision, intent (in)  :: lambda  !> wavelength in nm
-  double precision, intent (in)  :: Tt      !> temperature in K
-  double precision, intent (in)  :: Pp      !> pressure in Pa
-  !double precision, intent (in)  :: Pw      !> partial pressure water vapor in Pa
-  double precision, intent (in)  :: hh      !> fractional humidity (0 --1) (replaces Pw)
-  double precision, intent (in)  :: xCO2    !> volume mixing ratio CO2 in ppm
-  double precision, intent (out) :: nn      !> refractive index of air
-  double precision, intent (out) :: rho     !> number density at given Pp and Tt in 1/ m³
-  double precision  :: Pw                        !> partial pressure water vapor in Pa
-  double precision  :: TtC                       !> temperature in C
-  double precision  :: k0,k1,k2,k3               !> constants needed for Eq. 1,2
-  double precision  :: a0,a1,a2,b0,b1,c0,c1,dd,ee!> constants needed for Eq. 12
-  double precision  :: w0,w1,w2,w3               !> constants needed for Eq. 3
-  !double precision  :: naxs, nas     !> n at 15 deg, 101.325 Pa, 0% hum, CO2= xc/ 450 ppm. 
-  !double precision  :: nws           !> n for water vaport at standart conditions 
-  double precision  :: nasm1         !> (nas-1) x 10⁸
-  double precision  :: naxsm1        !> (naxs -1) x 10⁸
-  double precision  :: nwsm1         !> (nws-1) x 10⁸
-  double precision  :: sigma, sigma2 !> wave number in 1/micro, wave number squared
-  double precision  :: Ma, Za, Zw    !> molar mass of air xCO2, compressibility dry air/water vapor
-  double precision  :: rhoaxs, rhows !> densities of standart air and water vapor
-  double precision  :: rhodry, rhowv !> density of air component and water vapor component
-  double precision  :: nnm1          !> (nn -1)*1e8
-  double precision  :: cf = 1.022    !> correction factor for nws
-  double precision  :: xw, Zz        ! xw=ff*Pw/Pp Zz=comperssibility at actual conditions
-  double precision  :: Aa,Bb,Cc,D2,svp ! constants for svp (saturation vapor pressure)
-  double precision  :: alpha, beta, gamma, ff  ! constants for ff (enhancement factor of water vapor in air) 
+  real(kind=16), intent (in)  :: lambda  !> wavelength in nm
+  real(kind=16), intent (in)  :: Tt      !> temperature in K
+  real(kind=16), intent (in)  :: Pp      !> pressure in Pa
+  !real(kind=16), intent (in)  :: Pw      !> partial pressure water vapor in Pa
+  real(kind=16), intent (in)  :: hh      !> fractional humidity (0 --1) (replaces Pw)
+  real(kind=16), intent (in)  :: xCO2    !> volume mixing ratio CO2 in ppm
+  real(kind=16), intent (out) :: nn      !> refractive index of air
+  real(kind=16), intent (out) :: rho     !> number density at given Pp and Tt in 1/ m³
+  real(kind=16)  :: Pw                        !> partial pressure water vapor in Pa
+  real(kind=16)  :: TtC                       !> temperature in C
+  real(kind=16)  :: k0,k1,k2,k3               !> constants needed for Eq. 1,2
+  real(kind=16)  :: a0,a1,a2,b0,b1,c0,c1,dd,ee!> constants needed for Eq. 12
+  real(kind=16)  :: w0,w1,w2,w3               !> constants needed for Eq. 3
+  !real(kind=16)  :: naxs, nas     !> n at 15 deg, 101.325 Pa, 0% hum, CO2= xc/ 450 ppm. 
+  !real(kind=16)  :: nws           !> n for water vaport at standart conditions 
+  real(kind=16)  :: nasm1         !> (nas-1) x 10⁸
+  real(kind=16)  :: naxsm1        !> (naxs -1) x 10⁸
+  real(kind=16)  :: nwsm1         !> (nws-1) x 10⁸
+  real(kind=16)  :: sigma, sigma2 !> wave number in 1/micro, wave number squared
+  real(kind=16)  :: Ma, Za, Zw    !> molar mass of air xCO2, compressibility dry air/water vapor
+  real(kind=16)  :: rhoaxs, rhows !> densities of standart air and water vapor
+  real(kind=16)  :: rhodry, rhowv !> density of air component and water vapor component
+  real(kind=16)  :: nnm1          !> (nn -1)*1e8
+  real(kind=16)  :: cf = 1.022d0    !> correction factor for nws
+  real(kind=16)  :: xw, Zz        ! xw=ff*Pw/Pp Zz=comperssibility at actual conditions
+  real(kind=16)  :: Aa,Bb,Cc,D2,svp ! constants for svp (saturation vapor pressure)
+  real(kind=16)  :: alpha, beta, gamma, ff  ! constants for ff (enhancement factor of water vapor in air)
   
-  TtC    = Tt -dble(273.15)
-  k0     = 238.0185     ! /micro²
-  k1     = 5792105.0    ! /micro²
-  k2     = 57.362       ! /micro²
-  k3     = 167917.0     ! /micro²
-  a0     = 1.58123e-6   ! K/ Pa
-  a1     = -2.9331e-8   ! / Pa
-  a2     = 1.1043e-10   ! /(K*Pa)
-  b0     = 5.707e-6     ! K/Pa
-  b1     = -2.051e-8    ! /Pa
-  c0     = 1.9898e-4    ! K/Pa
-  c1     = -2.376e-6    ! /Pa
-  dd     = 1.83e-11     ! K²/Pa²
-  ee     = -0.765e-8    ! K²/Pa²
-  w0     = 295.235      ! /micro²  ! this actually should not have a unit
-  w1     = 2.6422       ! /micro²  ! and this should be micro² not 1/micro²
-  w2     = -0.032380    ! /micro⁴  ! accordingly, this should be micro⁴
-  w3     = 0.004028     ! /micro⁶  ! and this micro⁶
-  Aa     = 1.2378847e-5 ! /K²
-  Bb     = -1.9121316e-2! /K
-  Cc     = 33.93711047  !
-  D2     = -6.3431645e3 ! K
-  alpha  = 1.00062      !
-  beta   = 3.14e-8      ! /Pa
-  gamma  = 5.6e-7       ! /C²
+  TtC    = Tt -dble(273.15d0)
+  k0     = dble(238.0185d0)     ! /micro²
+  k1     = dble(5792105.0d0)    ! /micro²
+  k2     = dble(57.362d0)       ! /micro²
+  k3     = dble(167917.0d0)     ! /micro²
+  a0     = dble(1.58123d-6)   ! K/ Pa
+  a1     = dble(-2.9331d-8)   ! / Pa
+  a2     = dble(1.1043d-10)   ! /(K*Pa)
+  b0     = dble(5.707d-6)     ! K/Pa
+  b1     = dble(-2.051d-8)    ! /Pa
+  c0     = dble(1.9898d-4)    ! K/Pa
+  c1     = dble(-2.376d-6)    ! /Pa
+  dd     = dble(1.83d-11)     ! K²/Pa²
+  ee     = dble(-0.765d-8)    ! K²/Pa²
+  w0     = dble(295.235d0)      ! /micro²  ! this actually should not have a unit
+  w1     = dble(2.6422d0)       ! /micro²  ! and this should be micro² not 1/micro²
+  w2     = dble(-0.032380d0)    ! /micro⁴  ! accordingly, this should be micro⁴
+  w3     = dble(0.004028d0)     ! /micro⁶  ! and this micro⁶
+  Aa     = dble(1.2378847d-5) ! /K²
+  Bb     = dble(-1.9121316d-2)! /K
+  Cc     = dble(33.93711047d0)  !
+  D2     = dble(-6.3431645d3) ! K
+  alpha  = dble(1.00062d0)      !
+  beta   = dble(3.14d-8)      ! /Pa
+  gamma  = dble(5.6d-7)       ! /C²
   
   svp    = exp(Aa*Tt*Tt+Bb*Tt+Cc+D2/Tt) !(checked)
   Pw     = hh *svp  ! new, changed from direct input.
   ff     = alpha + beta*Pp + gamma*TtC*TtC !(checked)
   xw     = ff* Pw/Pp  ! see page 3 !(checked)
-  sigma  = dble(1.0)/(lambda/dble(1000))
+  sigma  = dble(1.0d0)/(lambda/dble(1000d0))
   sigma2 = sigma*sigma
   nasm1  = k1/(k0-sigma2) + k3/(k2-sigma2) !(checked)
-  naxsm1 = nasm1*(dble(1.0)+dble(0.534e-6)*(xCO2-dble(450.0)))*1.0e-8 ! ??? factor 1e-8?
+  naxsm1 = nasm1*(dble(1.0d0)+dble(0.534d-6)*(xCO2-dble(450.0d0)))!*1.0e-8 ! ??? factor 1e-8?
   nwsm1  = cf *(w0+w1*sigma2+w2*sigma2*sigma2+w3*sigma2*sigma2*sigma2) !checked
-  Ma     = 1.0e-3*(dble(28.9635)+dble(12.011e-6)*(xCO2-dble(400.0)))!checked
-  Za     = dble(1.0)-dble(101325.0)/dble(288.15)*(a0+a1*dble(15.0)+a2*dble(225.0))+ &
-               (dble(101325.0) /dble(288.15)* dble(101325.0) /dble(288.15))*dd !(checked)
-  Zw     = dble(1.0)-dble(1333.0) /dble(293.15) *(a0+a1*dble(20.0)+a2*dble(400.0)+ &
-                b0+b1*dble(20.0)+c0+c1*dble(20.0))+ &
-                (dble(1333.0) /dble(293.15)* dble(1333.0) /dble(293.15))*(dd+ee) !(checked)
-  rhoaxs =  dble(101325.0)*Ma  /(Za*Rgas*dble(288.15))   ! in kg/m³ !(checked)
-  rhows  =  dble(1333.0 )*Mmwv/(Zw*Rgas*dble(293.15))    ! in kg/m³ !(checked)
-  Zz     = dble(1.0)- (Pp/Tt)*   &
+  Ma     = 1.0d-3*(dble(28.9635d0)+dble(12.011d-6)*(xCO2-dble(400.0d0)))!checked
+  Za     = dble(1.0d0)-dble(101325.0d0)/dble(288.15d0)*(a0+a1*dble(15.0d0)+a2*dble(225.0d0))+ &
+               (dble(101325.0d0) /dble(288.15d0)* dble(101325.0d0) /dble(288.15d0))*dd !(checked)
+  Zw     = dble(1.0d0)-dble(1333.0d0) /dble(293.15d0) *(a0+a1*dble(20.0d0)+a2*dble(400.0d0)+ &
+                b0+b1*dble(20.0d0)+c0+c1*dble(20.0d0))+ &
+                (dble(1333.0d0) /dble(293.15d0)* dble(1333.0d0) /dble(293.15d0))*(dd+ee) !(checked)
+  rhoaxs =  dble(101325.0d0)*Ma  /(Za*Rgas*dble(288.15d0))   ! in kg/m³ !(checked)
+  rhows  =  dble(1333.0d0 )*Mmwv/(Zw*Rgas*dble(293.15d0))    ! in kg/m³ !(checked)
+  Zz     = dble(1.0d0)- (Pp/Tt)*   &
           (a0 + a1*TtC + a2*TtC*TtC+ &
           (b0 + b1*TtC) *xw +        &
           (c0 + c1*TtC) *xw*xw) +     &
           (Pp/Tt)*(Pp/Tt)*(dd+ee*xw*xw)  !(checked)
-  rhodry = Pp*Ma*(dble(1.0)-xw)/(Zz*Rgas*Tt) !(checked)
+  rhodry = Pp*Ma/(Zz*Rgas*Tt)*(dble(1.0d0)-xw) !(checked)
   rhowv  = Pp*Mmwv*         xw /(Zz*Rgas*Tt)  !(checked)
   rho    = rhodry/Ma*Av   ! number density in /m³
   nnm1   =  (rhodry/rhoaxs) * naxsm1 + (rhowv/rhows) * nwsm1
@@ -187,9 +189,9 @@ subroutine calc_ref_index_air(lambda,Tt,Pp,hh,xCO2,nn,rho)
 end subroutine calc_ref_index_air
 
 
-double precision function dDelta(F)
-  double precision :: F
-    dDelta = dble(6.0)* (dble(1.0)-F)/(dble(-7.0)*F-dble(3.0))
+real(kind=16) function dDelta(F)
+  real(kind=16) :: F
+    dDelta = dble(6.0)* (dble(1.0)-F)/(dble(-7.0)*F-dble(3.0))  ! 9.2 instead of 6?
 end function dDelta
 
 subroutine calc_Delta(lambda,Delta)
@@ -199,21 +201,21 @@ subroutine calc_Delta(lambda,Delta)
   !> maybe later, I can implement that it is also a function of xCO2,  
   !> for the moment, I ignore the change 
   !> implements (12)
-  double precision, intent (in) :: lambda  !> wavelength in nm
-  double precision, intent (out):: Delta   !> depolarization ratio1
-  double precision              :: lambdainmicro  !> lambda in micro meter
-  double precision              :: lambdainmicro2 !> lambda * lambda
-  double precision              :: xN2  = 780840.0 !> VMR of N2  in ppm
-  double precision              :: xO2  = 209460.0 !> VMR of O2  in ppm
-  double precision              :: xAr  =   9340.0 !> VMR of Ar  in ppm
-  double precision              :: xCO2 =    400.0 !> VMR of CO2 in ppm
-  double precision              :: mil  =1000000.0 !> one million in dp
-  double precision              :: FN2             !> King Factors for N2, O2,Ar, CO2
-  double precision              :: FO2             !> from Bates 1984
-  double precision              :: DeltaN2         !> can be transformed to Delta via
-  double precision              :: DeltaO2         !> F := (6+3*Delta)/(6-7*Delta)
-  double precision              :: DeltaAr = 0.0   !> Ar and CO2 are given not lambda 
-  double precision              :: DeltaCO2= 0.0814! dependend
+  real(kind=16), intent (in) :: lambda  !> wavelength in nm
+  real(kind=16), intent (out):: Delta   !> depolarization ratio1
+  real(kind=16)              :: lambdainmicro  !> lambda in micro meter
+  real(kind=16)              :: lambdainmicro2 !> lambda * lambda
+  real(kind=16)              :: xN2  = 780840.0 !> VMR of N2  in ppm
+  real(kind=16)              :: xO2  = 209460.0 !> VMR of O2  in ppm
+  real(kind=16)              :: xAr  =   9340.0 !> VMR of Ar  in ppm
+  real(kind=16)              :: xCO2 =    400.0 !> VMR of CO2 in ppm
+  real(kind=16)              :: mil  =1000000.0 !> one million in dp
+  real(kind=16)              :: FN2             !> King Factors for N2, O2,Ar, CO2
+  real(kind=16)              :: FO2             !> from Bates 1984
+  real(kind=16)              :: DeltaN2         !> can be transformed to Delta via
+  real(kind=16)              :: DeltaO2         !> F := (6+3*Delta)/(6-7*Delta)
+  real(kind=16)              :: DeltaAr = 0.0   !> Ar and CO2 are given not lambda 
+  real(kind=16)              :: DeltaCO2= 0.0814! dependend
 
   lambdainmicro  = lambda/ dble(1000.0) 
   lambdainmicro2 = lambdainmicro*lambdainmicro
@@ -227,7 +229,8 @@ subroutine calc_Delta(lambda,Delta)
             DeltaO2 * xO2 / mil + &
             DeltaAr * xAr / mil + &
             DeltaCO2* xCO2/ mil 
-  
+  Delta = 0.035 ! according to Goody, Yung 1989 just after eq. 7.38
+  ! something goes wrong in the calculation above. May 2022
 end subroutine calc_Delta
 
 subroutine calc_rayscatt_cross(lambda, m, N2, Delta, rayscatt, beta)
@@ -237,16 +240,17 @@ subroutine calc_rayscatt_cross(lambda, m, N2, Delta, rayscatt, beta)
   !> formula in Nicolet,M. 1984
   !> just to get an idea if I do the right thing.
 
-  double precision, intent (in)  :: lambda  !> in nm
-  double precision, intent (out) :: rayscatt !> in cm²
-  double precision, intent (out) :: beta(0:2)
-  double precision, intent (in)  :: m !> refractive index of air, Ciddor, P.E. 1996
-  double precision, intent (in)  :: N2 !> number density of air in /m³
-  double precision, intent (in)  :: Delta !> = 0.0350
+  real(kind=16), intent (in)  :: lambda  !> in nm
+  real(kind=16), intent (out) :: rayscatt !> in cm²
+  real(kind=16), intent (out) :: beta(0:2)
+  real(kind=16), intent (in)  :: m !> refractive index of air, Ciddor, P.E. 1996
+  real(kind=16), intent (in)  :: N2 !> number density of air in /m³
+  real(kind=16), intent (in)  :: Delta !> = 0.0350
   ! effective depolarization index of air, Goody&Yung 1989, cpt7,p11 instead,
   ! use the wavelength dependence from Bates 1984
-  double precision :: Nincmp3       !> N2 in /cm³
-  double precision :: lambincm      !> lambda in cm
+  real(kind=16) :: Nincmp3       !> N2 in /cm³
+  real(kind=16) :: lambincm      !> lambda in cm
+  real(kind=16) :: c1, c2, c3, c4, c5, c6, zzz, yyy
 
   lambincm = lambda/dble(10000000.0)
   Nincmp3 = N2/dble(1000000.0)
@@ -259,7 +263,28 @@ subroutine calc_rayscatt_cross(lambda, m, N2, Delta, rayscatt, beta)
     (m*m+dble(2.0))) &
             *(dble(6.0)+dble(3.0)*Delta)/(dble(6.0)-dble(7.0)*Delta)
   ! according to Spurr et al 2001
-  beta = (/dble(1.0),dble(0.0),(dble(1.0)-Delta)/(dble(2.0)+Delta)/)
+  beta = (/one, zero,(one-Delta)/(two+Delta)/)
+  ! There seem to be an issue with rayscatt. Use instead the simplified formula
+  ! by Nicolet,M. 1984 (see also radiations_optics_atmos.pdf page 1166
+  if (lambda < 550) then
+    rayscatt = 4.02d-28/((lambda/1000)**(4+(0.000389*lambda + 94.26/lambda - 0.3328)))
+  else
+    rayscatt = 4.02d-28/((lambda/1000)**4.04)
+  endif
+  
+  ! implementation as in disort
+  c1 = 2.318239D-8
+  c2 = 1.798522D-4
+  c3 = 1.495366d-5
+  c4 = -9.886386d-7
+  c5 = 1.078786d-2
+  c6 = 3.97839d-38
+  zzz = 1.D+6/(lambda*lambda)
+  yyy = c1*zzz
+  yyy = c2 + zzz*(c3+zzz*(c4+yyy))
+  yyy = (1.d0 + zzz*(c5 + zzz*yyy))   
+  rayscatt = c6*zzz*zzz*yyy*1.D+10
+  !    write(*,*) "Raleigh xs, ref idx ", rayscatt, lambda
 end subroutine calc_rayscatt_cross
   
 subroutine calc_vlidort_input(ngreek_moments_input,gas_scat, &
@@ -271,24 +296,24 @@ subroutine calc_vlidort_input(ngreek_moments_input,gas_scat, &
   !> also, the moments should start from 0
   !
   integer, intent(in) :: ngreek_moments_input
-  double precision, intent (in)  :: gas_scat    !> gas scattering coefficient in /cm
-  double precision, intent (in)  :: gas_abs     !> gas absorption coefficient in /cm
-  double precision, intent (in)  :: aer_abs     !> aerosol absorption coefficient
-  double precision, intent (in)  :: aer_scat    !> aerosol scattering coefficient
-  double precision, intent (in)  :: layerz      !> layer thickness in km
-  double precision, intent (in)  :: gas_beta(0:2) !> phase function expansion coeff gas
-  double precision, intent (in), dimension(:)  :: aer_beta(0:ngreek_moments_input)
+  real(kind=16), intent (in)  :: gas_scat    !> gas scattering coefficient in /cm
+  real(kind=16), intent (in)  :: gas_abs     !> gas absorption coefficient in /cm
+  real(kind=16), intent (in)  :: aer_abs     !> aerosol absorption coefficient
+  real(kind=16), intent (in)  :: aer_scat    !> aerosol scattering coefficient
+  real(kind=16), intent (in)  :: layerz      !> layer thickness in km
+  real(kind=16), intent (in)  :: gas_beta(0:2) !> phase function expansion coeff gas
+  real(kind=16), intent (in), dimension(:)  :: aer_beta(0:ngreek_moments_input)
   !> phase function expansion coeff aer
-  double precision, intent (out) :: omega       !> total single scattering albedo
-  double precision, intent (out) :: tau         !> total optical depth 
-  double precision, intent (out), dimension(:) :: beta(0:ngreek_moments_input)
+  real(kind=16), intent (out) :: omega       !> total single scattering albedo
+  real(kind=16), intent (out) :: tau         !> total optical depth 
+  real(kind=16), intent (out), dimension(:) :: beta(0:ngreek_moments_input)
   !> total phase function moments
-  double precision, intent (out) :: dtaudC      !> derivative C/tau   * d tau   / d C
-  double precision, intent (out) :: domegadC    !> derivative C/omega * d omega / d C
-  double precision, intent (out),  dimension(:) :: dbetadC(0:ngreek_moments_input)
+  real(kind=16), intent (out) :: dtaudC      !> derivative C/tau   * d tau   / d C
+  real(kind=16), intent (out) :: domegadC    !> derivative C/omega * d omega / d C
+  real(kind=16), intent (out),  dimension(:) :: dbetadC(0:ngreek_moments_input)
   !> derivative C/beta  * d beta  / d C
-  double precision               :: extinc      !> total extinction coefficient
-  double precision               :: layerzincm  !> z in cm
+  real(kind=16)               :: extinc      !> total extinction coefficient
+  real(kind=16)               :: layerzincm  !> z in cm
   integer                        :: i 
 
 
@@ -297,9 +322,8 @@ subroutine calc_vlidort_input(ngreek_moments_input,gas_scat, &
   layerzincm = layerz * dble(100000.0)
   extinc = gas_scat + gas_abs +aer_abs + aer_scat
   tau = layerzincm * extinc
-  omega = min((gas_scat +aer_scat) / extinc,0.99999)
+  omega = min((gas_scat +aer_scat) / extinc, 1-1.0d-15)
   ! MMF July 2017: to prevent vlidort input error
-
   ! Force zeroth moment to be one?
   beta(0) = 1.0
 
